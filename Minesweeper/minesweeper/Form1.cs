@@ -174,5 +174,6 @@ namespace minesweeper
         private void BombsLabel_TextChanged(object sender, EventArgs e)
         {
         }
+
     }
 }
