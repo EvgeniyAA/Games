@@ -13,6 +13,8 @@ namespace minesweeper
         public int BombsToWin = 10;
         public int Bombs = 10;
         public int[,] Cells = new int[NumberOfCells, NumberOfCells];
+        public int CursorX;
+        public int CursorY;
 
         public Brush[] Brushes = new Brush[]
         {
@@ -41,29 +43,29 @@ namespace minesweeper
                 LineAlignment = StringAlignment.Center
             };
             pictureBox1.Location = new Point(0, 0);
-            pictureBox1.Width = ButtonSize * NumberOfCells + 1;
-            pictureBox1.Height = ButtonSize * NumberOfCells + 1;
-            int cellWidth = pictureBox1.Width / NumberOfCells;
-            int cellHeight = pictureBox1.Height / NumberOfCells;
-            for (int i = 0; i <= NumberOfCells; i++)     
-                draw.DrawLine(linesPen, i * cellHeight, 0, i * cellHeight, pictureBox1.Height);
+            pictureBox1.Width = ButtonSize*NumberOfCells + 1;
+            pictureBox1.Height = ButtonSize*NumberOfCells + 1;
+            int cellWidth = pictureBox1.Width/NumberOfCells;
+            int cellHeight = pictureBox1.Height/NumberOfCells;
+            for (int i = 0; i <= NumberOfCells; i++)
+                draw.DrawLine(linesPen, i*cellHeight, 0, i*cellHeight, pictureBox1.Height);
             for (int j = 0; j <= NumberOfCells; j++)
-                draw.DrawLine(linesPen, 0, j * cellWidth, pictureBox1.Width, j * cellWidth);
+                draw.DrawLine(linesPen, 0, j*cellWidth, pictureBox1.Width, j*cellWidth);
 
             for (int i = 0; i < NumberOfCells; i++)
             {
-                draw.DrawLine(linesPen, i * cellHeight, 0, i * cellHeight, pictureBox1.Height);
+                draw.DrawLine(linesPen, i*cellHeight, 0, i*cellHeight, pictureBox1.Height);
                 for (int j = 0; j < NumberOfCells; j++)
                 {
-                    draw.DrawLine(linesPen, 0, j * cellWidth, pictureBox1.Width, j * cellWidth);
+                    draw.DrawLine(linesPen, 0, j*cellWidth, pictureBox1.Width, j*cellWidth);
                     if (Cells[i, j] > 0)
                         draw.DrawString(Cells[i, j].ToString(), font, Brushes[Cells[i, j]],
-                            new RectangleF(j * cellWidth, i * cellHeight, cellWidth, cellHeight), stringFormat);
+                            new RectangleF(j*cellWidth, i*cellHeight, cellWidth, cellHeight), stringFormat);
                 }
             }
         }
 
-        
+
         public Form1()
         {
             InitializeComponent();
@@ -74,8 +76,8 @@ namespace minesweeper
                 {
                     button[i, j] = new Button
                     {
-                        Location = new Point(j*ButtonSize+1, i*ButtonSize+1),
-                        Size = new Size(ButtonSize-1, ButtonSize-1)
+                        Location = new Point(j*ButtonSize + 1, i*ButtonSize + 1),
+                        Size = new Size(ButtonSize - 1, ButtonSize - 1)
                     };
                     button[i, j].MouseClick += button_MouseClick;
                     button[i, j].MouseDown += button_MouseDown;
@@ -99,7 +101,7 @@ namespace minesweeper
                 for (int j = 0; j < NumberOfCells; j++)
                 {
                     Cells[i, j] = 0;
-                    button[i,j].Show();
+                    button[i, j].Show();
                     button[i, j].BackColor = default(Color);
                     Used[i, j] = false;
                 }
@@ -136,7 +138,7 @@ namespace minesweeper
             pictureBox1.Refresh();
         }
 
-    private void button_MouseDown(object sender, MouseEventArgs e)
+        private void button_MouseDown(object sender, MouseEventArgs e)
         {
             int i = Convert.ToInt16((sender as Button).Tag);
             int j = (sender as Button).ImageIndex;
@@ -158,7 +160,11 @@ namespace minesweeper
                     BombsToWin--;
                 button[i, j].BackColor = Color.Blue;
             }
-            if ((BombsToWin == 0) && (Bombs == 0)) { MessageBox.Show("You Win!"); Restart(); }
+            if ((BombsToWin == 0) && (Bombs == 0))
+            {
+                MessageBox.Show("You Win!");
+                Restart();
+            }
         }
 
         public void Dfs(int[,] x, int i, int j)
@@ -209,15 +215,20 @@ namespace minesweeper
         {
             int i = Convert.ToInt16((sender as Button).Tag);
             int j = (sender as Button).ImageIndex;
-            if(!(button[i,j].BackColor==Color.Blue))
-            Dfs(Cells, i, j);
+            if (!(button[i, j].BackColor == Color.Blue))
+                Dfs(Cells, i, j);
         }
 
-        
 
         private void BombsLabel_TextChanged(object sender, EventArgs e)
         {
         }
 
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            CursorX = Cursor.Position.X;
+            CursorY = Cursor.Position.Y;
+            Console.Write(CursorX + " " + CursorY);
+        }
     }
 }

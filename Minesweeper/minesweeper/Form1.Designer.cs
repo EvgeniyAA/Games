@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.BombsStrip = new System.Windows.Forms.StatusStrip();
             this.BombsLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.BombsStrip.SuspendLayout();
             this.SuspendLayout();
@@ -42,6 +44,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(456, 313);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             // 
             // BombsStrip
@@ -63,6 +66,10 @@
             this.BombsLabel.Size = new System.Drawing.Size(78, 20);
             this.BombsLabel.Text = "Bombs: 10";
             this.BombsLabel.TextChanged += new System.EventHandler(this.BombsLabel_TextChanged);
+            // 
+            // timer1
+            // 
+
             // 
             // Form1
             // 
@@ -89,6 +96,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.StatusStrip BombsStrip;
         private System.Windows.Forms.ToolStripStatusLabel BombsLabel;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
