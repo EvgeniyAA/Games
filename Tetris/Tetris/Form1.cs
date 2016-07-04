@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 
 namespace Tetris
 {
@@ -11,31 +9,28 @@ namespace Tetris
         private const int Length = 20;
 
         private readonly int yOffset;
-        private bool shapeCreated;
-        private bool gameOver;
         private readonly CellType[,] board = new CellType[Length/2, Length];
         private readonly CellType[,] smallBoard = new CellType[4, 4];
-        private SolidBrush shapeBrush = new SolidBrush(Color.Green);
+        private readonly SolidBrush shapeBrush = new SolidBrush(Color.Green);
         private bool buildingConstructed;
         private bool canMove = true;
         private bool pause;
-        private char shape;
         private int score;
-        private char nextShape='1';
-        public Shape CreatedShape = new Shape();
+        public Shape CreatedShape;
+        public Shape NextShape;
 
         public Form1()
         {
             yOffset = 1;
-            shape = '1';
             InitializeComponent();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             ClientSize = new Size(Length*10 + 160, Length*20 + 50);
-            pictureBox2.Location = new Point(Length * 11  , Length*2);
-            pictureBox2.Size = new Size(Length * 4, Length * 4);
+            pictureBox2.Location = new Point(Length*11, Length*2);
+            pictureBox2.Size = new Size(Length*4, Length*4);
+            Restart();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -47,162 +42,84 @@ namespace Tetris
             pictureBox1.Width = Length*10 + 1;
             int cellSize = pictureBox1.Width/10;
 
-
-            for (int i = 0; i < pictureBox1.Width; i++)
+            for (int i = 0; i <= pictureBox1.Width; i++)
+            {
                 draw.DrawLine(linesPen, cellSize*i, 0, cellSize*i, pictureBox1.Height);
-            for (int j = 0; j < pictureBox1.Height; j++)
-                draw.DrawLine(linesPen, 0, j*cellSize, pictureBox1.Width, j*cellSize);
-            draw.DrawLine(linesPen, pictureBox1.Height, 0, pictureBox1.Width, pictureBox1.Height);
-            draw.DrawLine(linesPen, 0, pictureBox1.Height, pictureBox1.Width, pictureBox1.Height);
+                draw.DrawLine(linesPen, 0, i*cellSize, pictureBox1.Width, i*cellSize);
+            }
+            CountScore();
+            if (GameOver())
+            {
+                timer1.Stop();
+                MessageBox.Show("Lose! Score=" + score);
+                CreatedShape.ShapeX.Clear();
+                CreatedShape.ShapeY.Clear();
+                NextShape.ShapeY.Clear();
+                NextShape.ShapeY.Clear();
+                Restart();
+            }
+            for (int j = 0; j < Length; j++)
+            {
+                for (int i = 0; i < Length/2; i++)
+                {
+                    if (board[i, j] != CellType.Building)
+                        board[i, j] = CellType.Empty;
+                }
+            }
+
+            for (int i = 0; i < CreatedShape.ShapeX.Count; i++)            
+                board[CreatedShape.ShapeX[i], CreatedShape.ShapeY[i]] = CellType.Shape;            
+      
+            for (int i = 0; i < Length/2; i++)           
+                for (int j = 0; j < Length; j++)                
+                    if ((board[i, j] == CellType.Shape) || (board[i, j] == CellType.Building))                   
+                        e.Graphics.FillRectangle(shapeBrush, i*cellSize + 1, j*cellSize + 1, cellSize - 1, cellSize - 1);          
+        }
+
+        private void CountScore()
+        {
             int k = 0;
-            
+
             for (int j = Length - 1; j > 0;)
             {
                 int countOfCells = 0;
-                for (int i = 0; i < Length/2; i++)
+                for (int i = 0; i < Length / 2; i++)
                 {
-
-
-                    if (board[i, j] == CellType.Building) countOfCells++;
-
+                    if (board[i, j] == CellType.Building)
+                        countOfCells++;
                 }
-                if (countOfCells == Length/2)
+                if (countOfCells == Length / 2)
                 {
                     DropDown(j);
                     k++;
                 }
                 else j--;
             }
-            
-
-            if (!shapeCreated)
-            {
-                
-                shapeCreated = true;
-                shape = nextShape == '1' ? CreatedShape.CreatedShape() : nextShape;
-                nextShape = CreatedShape.CreatedShape();
-                timer1.Interval = 600;
-                if (shape == 'J')
-                {
-                    int[] shapeJx = {4, 5, 5, 5};
-                    int[] shapeJy = {2, 2, 1, 0};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.Red);
-
-                }
-
-                if (shape == 'L')
-                {
-                    int[] shapeJx = {6, 5, 5, 5};
-                    int[] shapeJy = {2, 2, 1, 0};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.Blue);
-                }
-
-                if (shape == 'O')
-                {
-                    int[] shapeJx = {4, 4, 5, 5};
-                    int[] shapeJy = {1, 0, 1, 0};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.Orange);
-                }
-                if (shape == 'T')
-                {
-                    int[] shapeJx = {4, 6, 5, 5};
-                    int[] shapeJy = {0, 0, 0, 1};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.Red);
-                }
-                if (shape == 'Z')
-                {
-                    int[] shapeJx = {6, 4, 5, 5};
-                    int[] shapeJy = {1, 0, 1, 0};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.Indigo);
-                }
-                if (shape == 'S')
-                {
-                    int[] shapeJx = {4, 6, 5, 5};
-                    int[] shapeJy = {1, 0, 1, 0};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.Olive);
-                }
-                if (shape == 'I')
-                {
-                    int[] shapeJx = {5, 5, 5, 5};
-                    int[] shapeJy = {0, 1, 2, 3};
-                    CreatedShape.ShapeX.AddRange(shapeJx);
-                    CreatedShape.ShapeY.AddRange(shapeJy);
-                    shapeBrush = new SolidBrush(Color.HotPink);
-                }
-                if (shape == '.')
-                {
-                    CreatedShape.ShapeX.Add(5);
-                    CreatedShape.ShapeY.Add(0);
-                    shapeBrush = new SolidBrush(Color.Green);
-                }
-
-            }
-
+            if (k == 1)
+                score = score + 100;
+            if (k == 2)
+                score = score + 300;
+            if (k == 3)
+                score = score + 700;
+            if (k == 4)
+                score = score + 1500;
+            label1.Text = "Score:" + score;
+        }
+        private bool GameOver()
+        {
+            bool gameOver = false;
             for (int i = 0; i < CreatedShape.ShapeX.Count; i++)
                 if ((board[CreatedShape.ShapeX[i], CreatedShape.ShapeY[i]] == CellType.Building) &&
                     (CreatedShape.ShapeY[i] < 5)) gameOver = true;
-
-
-            for (int j = 0; j < Length; j++)
-            {
-                for (int i = 0; i < Length/2; i++)
-                {
-
-                    if (board[i, j] != CellType.Building)
-                        board[i, j] = CellType.Empty;
-                }
-            }
-
-            for (int i = 0; i < CreatedShape.ShapeX.Count; i++)
-            {
-                board[CreatedShape.ShapeX[i], CreatedShape.ShapeY[i]] = CellType.Shape;
-            }
-
-            if (k == 1) score = score + 100;
-            if (k == 2) score = score + 300;
-            if (k == 3) score = score + 700;
-            if (k == 4) score = score + 1500;
-            label1.Text = "Score:" + score;
-            for (int i = 0; i < Length/2; i++)
-            {
-                for (int j = 0; j < Length; j++)
-                {
-                    if ((board[i, j] == CellType.Shape) || (board[i, j] == CellType.Building))
-                    {
-                        e.Graphics.FillRectangle(shapeBrush, i*cellSize + 1, j*cellSize + 1, cellSize - 1, cellSize - 1);
-                    }
-                }
-            }
-
-            if (gameOver)
-            {
-                timer1.Stop();
-                MessageBox.Show("Lose! Score="+score);
-
-                Restart();
-            }
+            return gameOver;
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
-            
-            if (buildingConstructed) timer1.Interval = 600;
+            if (buildingConstructed)
+                timer1.Interval = 600;
             Moving();
             pictureBox1.Refresh();
             pictureBox2.Refresh();
-
         }
 
         private void Moving()
@@ -211,13 +128,16 @@ namespace Tetris
             if (CreatedShape.ShapeX.Count == 1) ////////////./////////
             {
                 int newY = CreatedShape.ShapeY[0] + yOffset;
-                //shapeX[i] = shapeX[i - 1];
                 if ((newY == Length) || (board[CreatedShape.ShapeX[0], newY]) == CellType.Building)
                 {
                     board[CreatedShape.ShapeX[0], CreatedShape.ShapeY[0]] = CellType.Building;
                     CreatedShape.ShapeX.Clear();
                     CreatedShape.ShapeY.Clear();
-                    shapeCreated = false;
+                    CreatedShape = new Shape(Length/4,NextShape.shape1);
+                    NextShape.ShapeX.Clear();
+                    NextShape.ShapeY.Clear();
+                    timer1.Interval = 600;
+                    NextShape = new Shape(2, '1');
                 }
                 else CreatedShape.ShapeY[0] = CreatedShape.ShapeY[0] + yOffset;
             }
@@ -227,26 +147,24 @@ namespace Tetris
                 for (int j = 0; j < CreatedShape.ShapeX.Count; j++)
                 {
                     newY[j] = CreatedShape.ShapeY[j] + yOffset;
-                    //shapeX[i] = shapeX[i - 1];
                     if ((newY[j] == Length) || (board[CreatedShape.ShapeX[j], newY[j]]) == CellType.Building)
                     {
-
                         for (int i = 0; i < CreatedShape.ShapeY.Count; i++)
                         {
                             board[CreatedShape.ShapeX[i], CreatedShape.ShapeY[i]] = CellType.Building;
                         }
                         CreatedShape.ShapeX.Clear();
                         CreatedShape.ShapeY.Clear();
-                        shapeCreated = false;
+                        CreatedShape = new Shape(Length / 4, NextShape.shape1);
+                        NextShape.ShapeX.Clear();
+                        NextShape.ShapeY.Clear();
+                        timer1.Interval = 600;
+                        NextShape = new Shape(2, '1');
                     }
                 }
                 for (int i = 0; i < CreatedShape.ShapeX.Count; i++)
-                {
                     CreatedShape.ShapeY[i] = CreatedShape.ShapeY[i] + yOffset;
-                }
-
             }
-
         }
 
         private void MovingToward(string direction)
@@ -266,12 +184,12 @@ namespace Tetris
                         CreatedShape.ShapeX[i] = CreatedShape.ShapeX[i] - 1;
                     }
             }
-        
+
             if (direction == "left")
             {
                 for (int i = 0; i < CreatedShape.ShapeX.Count; i++)
                 {
-                    if ((CreatedShape.ShapeX[i] + 1 >= Length / 2) ||
+                    if ((CreatedShape.ShapeX[i] + 1 >= Length/2) ||
                         (board[CreatedShape.ShapeX[i] + 1, CreatedShape.ShapeY[i]] == CellType.Building))
                         canMove = false;
                 }
@@ -285,11 +203,9 @@ namespace Tetris
 
         private void Restart()
         {
-            shapeCreated = false;
-            gameOver = false;
-            score = 0;
-            CreatedShape.ShapeX.Clear();
-            CreatedShape.ShapeY.Clear();
+            score = 0;            
+            CreatedShape = new Shape(Length / 4, '1');
+            NextShape = new Shape(2, '1');
             for (int i = 0; i < Length/2; i++)
             {
                 for (int j = 0; j < Length; j++)
@@ -302,9 +218,8 @@ namespace Tetris
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-
             if ((e.KeyCode == Keys.A) || (e.KeyCode == Keys.Left))
-            {      
+            {
                 MovingToward("right");
             }
             if ((e.KeyCode == Keys.D) || (e.KeyCode == Keys.Right))
@@ -313,27 +228,25 @@ namespace Tetris
             }
             if (e.KeyCode == Keys.S)
             {
-
-                if (shapeCreated)
                     timer1.Interval = 100;
-                //pictureBox1.Refresh();
             }
 
             if (e.KeyCode == Keys.W)
             {
-                if ((shape == 'Z') || (shape == 'S') || (shape == 'L') || (shape == 'J') || (shape == 'T'))
+                if ((CreatedShape.shape1 == 'Z') || (CreatedShape.shape1 == 'S') || (CreatedShape.shape1 == 'L') || (CreatedShape.shape1 == 'J') || (CreatedShape.shape1 == 'T'))
                     if (CheckRotate())
                         CreatedShape.Rotate();
-                if (shape == 'I')
+                if (CreatedShape.shape1 == 'I')
                     if (CheckRotate())
-                        CreatedShape.SpecialRotate();
+                        CreatedShape.SpecialRotate('I');
+                if(CreatedShape.shape1=='L')
+                    if(CheckRotate())
+                        CreatedShape.SpecialRotate('L');
             }
 
             if (e.KeyCode == Keys.Space)
             {
-                if (shapeCreated)
                     timer1.Interval = 10;
-                pictureBox1.Refresh();
             }
             if (e.KeyCode == Keys.Escape)
             {
@@ -345,13 +258,11 @@ namespace Tetris
                 else
                 {
                     timer1.Stop();
-
                     pause = true;
-
                     for (int j = 0; j < Length; j++)
                     {
                         Console.WriteLine();
-                        for (int i = 0; i < Length/2; i++)
+                        for (int i = 0; i < Length / 2; i++)
                         {
                             if (board[i, j] == CellType.Empty) Console.Write("0");
                             if (board[i, j] == CellType.Building) Console.Write("1");
@@ -364,62 +275,67 @@ namespace Tetris
             pictureBox1.Refresh();
         }
 
+        private bool CheckInBuilding()
+        {
+            return (board[CreatedShape.ShapeX[2] + 1, CreatedShape.ShapeY[2]] != CellType.Building) &&
+                   (board[CreatedShape.ShapeX[2] - 1, CreatedShape.ShapeY[2]] != CellType.Building) &&
+                   (board[CreatedShape.ShapeX[2], CreatedShape.ShapeY[2] + 1] != CellType.Building) &&
+                   (board[CreatedShape.ShapeX[2], CreatedShape.ShapeY[2] - 1] != CellType.Building);
+        }
+
         private bool CheckRotate()
         {
-            if (((shape == 'Z') || (shape == 'S') || (shape == 'L') || (shape == 'J')) &&
-                (CreatedShape.ShapeX[2] < Length/2 - 1) && (CreatedShape.ShapeX[2] > 0) &&
-                (board[CreatedShape.ShapeX[2] + 1, CreatedShape.ShapeY[2]] != CellType.Building) &&
-                (board[CreatedShape.ShapeX[2] - 1, CreatedShape.ShapeY[2]] != CellType.Building) &&
-                (board[CreatedShape.ShapeX[2], CreatedShape.ShapeY[2] + 1] != CellType.Building) &&
-                (board[CreatedShape.ShapeX[2], CreatedShape.ShapeY[2] - 1] != CellType.Building) &&
-                (CreatedShape.ShapeY[2] > 0))
+            if (((shape == 'L') || (shape == 'J'))
+            {
+                testShape = CreateShape.Rotate();
+                if () { }
+            }
+                if((CreateShape.ShapeX[2] < Length / 2 - 1) && (CreateShape.ShapeX[2] > 0) && CheckInBuilding() &&
+                (CreateShape.Rotate() ==
+                (CreateShape.ShapeY[2] > 0)))
                 return true;
-            if (shape == 'T')
+            if (CreatedShape.shape1 == 'T')
             {
                 for (int i = 0; i < CreatedShape.ShapeX.Count; i++)
                 {
-                    if ((CreatedShape.ShapeY[2] - 1 < 0) &&(CreatedShape.ShapeY[i] - 1 < 0)) return false;
+                    if ((CreatedShape.ShapeY[2] - 1 < 0) && (CreatedShape.ShapeY[i] - 1 < 0))
+                        return false;
                 }
-                if ((CreatedShape.ShapeX[2] < Length/2 - 1) && (CreatedShape.ShapeX[2] > 0) &&
-                    (board[CreatedShape.ShapeX[2] + 1, CreatedShape.ShapeY[2]] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[2] - 1, CreatedShape.ShapeY[2]] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[2], CreatedShape.ShapeY[2] + 1] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[2], CreatedShape.ShapeY[2] - 1] != CellType.Building) &&
+                if ((CreatedShape.ShapeX[2] < Length/2 - 1) && (CreatedShape.ShapeX[2] > 0) && CheckInBuilding()&&
                     (CreatedShape.ShapeY[2] > 0))
                     return true;
             }
-            if (shape == 'I')
+            if (CreatedShape.shape1 == 'I')
             {
-                if((CreatedShape.ShapeX[1]==CreatedShape.ShapeX[3])&&(CreatedShape.ShapeX[3] < Length / 2 - 2) && (CreatedShape.ShapeX[3] !=0)) 
-                if ((board[CreatedShape.ShapeX[1] + 2, CreatedShape.ShapeY[1]] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[1] -1, CreatedShape.ShapeY[1]] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1]-1] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] + 2] != CellType.Building))
-                    return true;
-                if((CreatedShape.ShapeY[1] == CreatedShape.ShapeY[3]) && (CreatedShape.ShapeX[1] >= 1))
+                if ((CreatedShape.ShapeX[1] == CreatedShape.ShapeX[3]) && (CreatedShape.ShapeX[3] < Length/2 - 2) &&
+                    (CreatedShape.ShapeX[3] != 0))
                     if ((board[CreatedShape.ShapeX[1] + 2, CreatedShape.ShapeY[1]] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[1] - 1, CreatedShape.ShapeY[1]] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] - 1] != CellType.Building) &&
-                    (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] + 2] != CellType.Building))
+                        (board[CreatedShape.ShapeX[1] - 1, CreatedShape.ShapeY[1]] != CellType.Building) &&
+                        (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] - 1] != CellType.Building) &&
+                        (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] + 2] != CellType.Building))
+                        return true;
+                if ((CreatedShape.ShapeY[1] == CreatedShape.ShapeY[3]) && (CreatedShape.ShapeX[1] >= 1))
+                    if ((board[CreatedShape.ShapeX[1] + 2, CreatedShape.ShapeY[1]] != CellType.Building) &&
+                        (board[CreatedShape.ShapeX[1] - 1, CreatedShape.ShapeY[1]] != CellType.Building) &&
+                        (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] - 1] != CellType.Building) &&
+                        (board[CreatedShape.ShapeX[1], CreatedShape.ShapeY[1] + 2] != CellType.Building))
                         return true;
             }
-
             return false;
         }
 
         private void DropDown(int lineNumber)
         {
             for (int i = 0; i < Length/2; i++)
-            {
+           
                 board[i, lineNumber] = CellType.Empty;
-            }
+            
             for (int i = 0; i < Length/2; i++)
             {
                 for (int j = lineNumber; j > 0; j--)
                 {
                     board[i, j] = board[i, j - 1];
                     board[i, j - 1] = CellType.Empty;
-
                 }
             }
         }
@@ -433,116 +349,22 @@ namespace Tetris
         {
             if (e.KeyCode == Keys.S)
             {
-                if (shapeCreated)
                     timer1.Interval = 600;
-                pictureBox1.Refresh();
             }
         }
 
         private void pictureBox2_Paint(object sender, PaintEventArgs e)
         {
-            //Graphics draw = e.Graphics;
-            pictureBox2.CreateGraphics();
-            //Pen linesPen = new Pen(Color.Gray);
-            int cellSize = pictureBox2.Width / 4;
-             List<int> shapeXsmall = new List<int>();
-             List<int> shapeYsmall = new List<int>();
-            Console.WriteLine(nextShape);
-            //draw.DrawLine(linesPen, 0, 0, 0, pictureBox2.Height);
-            //draw.DrawLine(linesPen, 0, 0, pictureBox2.Width, 0);
-            //draw.DrawLine(linesPen, pictureBox2.Width-1, 0, pictureBox2.Width-1, pictureBox2.Height);
-            //draw.DrawLine(linesPen, 0, pictureBox2.Height-1, pictureBox2.Width, pictureBox2.Height-1);
-            if (nextShape == 'J')
-            {
-                int[] shapeJx = { 1, 2, 2, 2 };
-                int[] shapeJy = { 2, 2, 1, 0 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.Red);
-
+            int cellSize = pictureBox2.Width/4;
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        smallBoard[i, j] = CellType.Empty;
+                for (int i = 0; i < NextShape.ShapeX.Count; i++)
+                    smallBoard[NextShape.ShapeX[i], NextShape.ShapeY[i]] = CellType.Shape;
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (smallBoard[i, j] == CellType.Shape)
+                            e.Graphics.FillRectangle(shapeBrush, i*cellSize + 1, j*cellSize + 1, cellSize - 1, cellSize - 1);
             }
-
-            if (nextShape == 'L')
-            {
-                int[] shapeJx = { 3, 2, 2, 2 };
-                int[] shapeJy = { 2, 2, 1, 0 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.Blue);
-            }
-
-            if (nextShape == 'O')
-            {
-                int[] shapeJx = { 1, 1, 2, 2 };
-                int[] shapeJy = { 1, 0, 1, 0 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.Orange);
-            }
-            if (nextShape == 'T')
-            {
-                int[] shapeJx = { 1, 3, 2, 2 };
-                int[] shapeJy = { 0, 0, 0, 1 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.Red);
-            }
-            if (nextShape == 'Z')
-            {
-                int[] shapeJx = { 3, 1, 2, 2 };
-                int[] shapeJy = { 1, 0, 1, 0 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.Indigo);
-            }
-            if (nextShape == 'S')
-            {
-                int[] shapeJx = { 1, 3, 2, 2 };
-                int[] shapeJy = { 1, 0, 1, 0 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.Olive);
-            }
-            if (nextShape == 'I')
-            {
-                int[] shapeJx = { 2, 2, 2, 2 };
-                int[] shapeJy = { 3, 2, 1, 0 };
-                shapeXsmall.AddRange(shapeJx);
-                shapeYsmall.AddRange(shapeJy);
-                shapeBrush = new SolidBrush(Color.HotPink);
-            }
-            if (nextShape == '.')
-            {
-                shapeXsmall.Add(2);
-                shapeYsmall.Add(0);
-                shapeBrush = new SolidBrush(Color.Green);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    smallBoard[i, j] = CellType.Empty;
-                }
-                
-            }
-            for (int i = 0; i < shapeXsmall.Count; i++)
-            {
-               
-                
-                smallBoard[shapeXsmall[i], shapeYsmall[i]] = CellType.Shape;
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    if (smallBoard[i, j] == CellType.Shape)
-                    {
-                        e.Graphics.FillRectangle(shapeBrush, i * cellSize + 1, j * cellSize + 1, cellSize - 1, cellSize - 1);
-                    }
-                }
-            }
-            shapeXsmall.Clear();
-            shapeXsmall.Clear();
         }
-    }
 }

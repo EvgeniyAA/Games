@@ -1,50 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Tetris
 {
     public class Shape
     {
-        public readonly List<int> ShapeX = new List<int>();
-        public readonly List<int> ShapeY = new List<int>();
+        public List<int> ShapeX = new List<int>();
+        public List<int> ShapeY = new List<int>();
+        public string position;//todo
         private readonly Random rnd = new Random();
+        public char shape1;
         public char[] ShapeType { get; } ={'O', 'I', 'J', 'L', 'S', 'Z', 'T', '.'};
 
-        public char CreatedShape()
+        public char CreateShape()
         {
             return ShapeType[rnd.Next(8)];
         }
 
-
-        public void SpecialRotate()
+        public Shape(int centerX, char shape)
         {
-            int t = 0;
-            bool rotated = false;
-            if ((ShapeX[1] == ShapeX[2])&&(!rotated))
+            shape1 = shape;
+            if (shape1 == '1')
             {
-                for (int i = 0; i < ShapeX.Count; i++)
-                {
-                    ShapeY[i] = ShapeY[1];
-                }
-                for (int j = 0; j < ShapeX.Count; j++)
-                {
-                    t = j - 1;
-                    ShapeX[j] = ShapeX[j] + t;
-                }
-                rotated = true;
+                shape1 = CreateShape();
             }
-            if ((ShapeY[1] == ShapeY[2])&&(!rotated))
+            switch (shape1)
             {
-                for (int i = 0; i < ShapeX.Count; i++)
+                case 'J':
+                    ShapeX.AddRange(new[] {centerX - 1, centerX, centerX, centerX});
+                    ShapeY.AddRange(new[] {2, 2, 1, 0});
+                    break;
+                case 'L':
+                    ShapeX.AddRange(new[] {centerX + 1, centerX, centerX, centerX});
+                    ShapeY.AddRange(new[] {2, 2, 1, 0});
+                    break;
+                case 'O':
+                    ShapeX.AddRange(new[] {centerX + 1, centerX+1, centerX, centerX});
+                    ShapeY.AddRange(new[] {1, 0, 1, 0});
+                    break;
+                case 'T':
+                    ShapeX.AddRange(new[] {centerX - 1, centerX + 1, centerX, centerX});
+                    ShapeY.AddRange(new[] {0, 0, 0, 1});
+                    break;
+                case 'Z':
+                    ShapeX.AddRange(new[] {centerX + 1, centerX - 1, centerX, centerX});
+                    ShapeY.AddRange(new[] {1, 0, 1, 0});
+                    break;
+                case 'S':
+                    ShapeX.AddRange(new[] {centerX - 1, centerX + 1, centerX, centerX});
+                    ShapeY.AddRange(new[] {1, 0, 1, 0});
+                    break;
+                case 'I':
+                    ShapeX.AddRange(new[] {centerX, centerX, centerX, centerX});
+                    ShapeY.AddRange(new[] {0, 1, 2, 3});
+                    break;
+                case '.':
+                    ShapeX.Add(centerX);
+                    ShapeY.Add(0);
+                    break;
+            }
+        }
+
+        public void SpecialRotate(char checkShape)
+        {
+            if (checkShape == 'I')
+            {
+                int t = 0;
+                bool rotated = false;
+                if ((ShapeX[1] == ShapeX[2]) && (!rotated))
                 {
-                    ShapeX[i] = ShapeX[1];
+                    for (int i = 0; i < ShapeX.Count; i++)
+                        ShapeY[i] = ShapeY[1];
+                    for (int j = 0; j < ShapeX.Count; j++)
+                    {
+                        t = j - 1;
+                        ShapeX[j] = ShapeX[j] + t;
+                    }
+                    rotated = true;
                 }
-                for (int j = 0; j < ShapeX.Count; j++)
+                if ((ShapeY[1] == ShapeY[2]) && (!rotated))
                 {
-                    t = j - 1;
-                    ShapeY[j] = ShapeY[j] + t;
+                    for (int i = 0; i < ShapeX.Count; i++)
+                        ShapeX[i] = ShapeX[1];
+                    for (int j = 0; j < ShapeX.Count; j++)
+                    {
+                        t = j - 1;
+                        ShapeY[j] = ShapeY[j] + t;
+                    }
+                    rotated = true;
                 }
-                rotated = true;
+            }
+            if (checkShape == 'L')
+            {
+                
             }
         }
         public void Rotate()
