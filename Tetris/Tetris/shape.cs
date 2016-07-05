@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace Tetris
 {
@@ -8,9 +7,17 @@ namespace Tetris
     {
         public List<int> ShapeX = new List<int>();
         public List<int> ShapeY = new List<int>();
-        public string position;//todo
+        public enum Position
+        {
+            FromTopToDown,
+            FromRightToLeft
+        }
+
+        public Position position;
         private readonly Random rnd = new Random();
-        public char shape1;
+        private readonly bool[] mustBeRotated = new bool[4];
+        public int RotateCount;
+        public char Shape1;
         public char[] ShapeType { get; } ={'O', 'I', 'J', 'L', 'S', 'Z', 'T', '.'};
 
         public char CreateShape()
@@ -20,12 +27,12 @@ namespace Tetris
 
         public Shape(int centerX, char shape)
         {
-            shape1 = shape;
-            if (shape1 == '1')
+            Shape1 = shape;
+            if (Shape1 == '1')
             {
-                shape1 = CreateShape();
+                Shape1 = CreateShape();
             }
-            switch (shape1)
+            switch (Shape1)
             {
                 case 'J':
                     ShapeX.AddRange(new[] {centerX - 1, centerX, centerX, centerX});
@@ -60,16 +67,18 @@ namespace Tetris
                     ShapeY.Add(0);
                     break;
             }
+            position = Position.FromTopToDown;
+            
         }
 
-        public void SpecialRotate(char checkShape)
+        public void LineRotate()
         {
-            if (checkShape == 'I')
+
+            bool isRotated = false;
+            if ((position == Position.FromTopToDown) && !isRotated)
             {
-                int t = 0;
-                bool rotated = false;
-                if ((ShapeX[1] == ShapeX[2]) && (!rotated))
-                {
+                
+                    int t = 0;
                     for (int i = 0; i < ShapeX.Count; i++)
                         ShapeY[i] = ShapeY[1];
                     for (int j = 0; j < ShapeX.Count; j++)
@@ -77,10 +86,13 @@ namespace Tetris
                         t = j - 1;
                         ShapeX[j] = ShapeX[j] + t;
                     }
-                    rotated = true;
-                }
-                if ((ShapeY[1] == ShapeY[2]) && (!rotated))
-                {
+                
+                position = Position.FromRightToLeft;
+                isRotated = true;
+            }
+            if ((position == Position.FromRightToLeft) && !isRotated)
+            {
+                    int t = 0;
                     for (int i = 0; i < ShapeX.Count; i++)
                         ShapeX[i] = ShapeX[1];
                     for (int j = 0; j < ShapeX.Count; j++)
@@ -88,76 +100,185 @@ namespace Tetris
                         t = j - 1;
                         ShapeY[j] = ShapeY[j] + t;
                     }
-                    rotated = true;
-                }
-            }
-            if (checkShape == 'L')
-            {
-                
+                position = Position.FromTopToDown;
+                isRotated = true;
             }
         }
+
         public void Rotate()
         {
-            
+
+            if ((RotateCount % 2 != 0) && ((Shape1 == 'Z') || (Shape1 == 'S')))
+            {
+                BackRotateCross();
+                BackRotateAngles();
+                RotateCount = 0;
+            }
+            else if (RotateCount%2 == 0||((Shape1!='Z')&&(Shape1!='S')))
+            {
+                RotateCross();
+                RotateAngles();
+                RotateCount++;
+            }           
+        }
+
+        private void BackRotateAngles()
+        {
             for (int i = 0; i < ShapeX.Count; i++)
             {
-                bool rotated = false;
+                bool isRotated = false;
                 if (i != 2)
                 {
-                    if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] == ShapeY[2]))  
+                    if (!isRotated)
+                    {
+                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] < ShapeY[2]) && (mustBeRotated[i]))
+                        {
+                            ShapeX[i] = ShapeX[i] - 2;
+                            isRotated = true;
+
+                        }
+                        else if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] > ShapeY[2]) && (mustBeRotated[i]))
+                        {
+                            ShapeY[i] = ShapeY[i] - 2;
+                            isRotated = true;
+                        }
+
+                    }
+                }
+            }
+        }
+        private void BackRotateCross()
+        {
+            for (int i = 0; i < ShapeX.Count; i++)
+            {
+                mustBeRotated[i] = false;
+                bool isRotated = false;
+                if (i != 2)
+                {
+                    if (!isRotated)
+                    {
+                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] == ShapeY[2]) && Shape1 == 'Z')
+                        {
+                            ShapeY[i] = ShapeY[i] - 1;
+                            ShapeX[i] = ShapeX[i] - 1;
+                            isRotated = true;
+                        }
+                    }
+                    if (!isRotated)
+                    {
+                        if ((ShapeX[i] == ShapeX[2]) && (ShapeY[i] > ShapeY[2])&&Shape1=='Z')
+                        {
+                            ShapeY[i] = ShapeY[i] - 1;
+                            ShapeX[i] = ShapeX[i] + 1;
+                            isRotated = true;
+                        }
+                    }
+
+
+                    if (!isRotated)
+                    {
+                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] == ShapeY[2]) && Shape1 == 'S')
+                        {
+                            ShapeY[i] = ShapeY[i] - 1;
+                            ShapeX[i] = ShapeX[i] - 1;
+                            isRotated = true;
+                        }
+                    }
+                    if (!isRotated)
+                    {
+                        if ((ShapeX[i] == ShapeX[2]) && (ShapeY[i] < ShapeY[2]) && Shape1 == 'S')
+                        {
+                            ShapeY[i] = ShapeY[i] + 1;
+                            ShapeX[i] = ShapeX[i] - 1;
+                            isRotated = true;
+
+                        }
+                    }
+                    if (!isRotated) mustBeRotated[i] = true;
+                }
+            }
+        }
+
+        private void RotateCross()
+        {         
+            for (int i = 0; i < ShapeX.Count; i++)
+            {
+                mustBeRotated[i] = false;
+                bool isRotated = false;
+                if (i != 2)
+                {
+                    if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] == ShapeY[2]))
                     {
                         ShapeY[i] = ShapeY[i] + 1;
                         ShapeX[i] = ShapeX[i] - 1;
-                        rotated = true;
+                        isRotated = true;
+                        
                     }
                     else if ((ShapeX[i] < ShapeX[2]) && (ShapeY[i] == ShapeY[2])) 
                     {
                         ShapeY[i] = ShapeY[i] - 1;
                         ShapeX[i] = ShapeX[i] + 1;
-                        rotated = true;
+                        isRotated = true;
+                        
                     }
-                    if (!rotated)
-                    {
+                    if (!isRotated)
+                    { 
                         if ((ShapeX[i] == ShapeX[2]) && (ShapeY[i] < ShapeY[2]))
-                        {
+                        { 
                             ShapeY[i] = ShapeY[i] + 1;
                             ShapeX[i] = ShapeX[i] + 1;
-                            rotated = true;
+                            isRotated = true;
+                           
                         }
                         else if ((ShapeX[i] == ShapeX[2]) && (ShapeY[i] > ShapeY[2]))
                         {
                             ShapeY[i] = ShapeY[i] - 1;
                             ShapeX[i] = ShapeX[i] - 1;
-                            rotated = true;
-                        }
-                    }
-                    if(rotated==false)
-                    {
-                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] > ShapeY[2]))
-                        {
-                            ShapeX[i] = ShapeX[i] - 2;
-                            rotated = true;
-                        }
-                        else if ((ShapeX[i] < ShapeX[2]) && (ShapeY[i] > ShapeY[2]))
-                        {
-                            ShapeY[i] = ShapeY[i] - 2;
-                            rotated = true;
+                            isRotated = true;
+                            
                         }
 
+                    }
+                    if (!isRotated)
+                    {
+                        mustBeRotated[i] = true;
+                    }
+                }
+            }
+        }
+        private void RotateAngles()
+        {
+            for (int i = 0; i < ShapeX.Count; i++)
+            {
+                bool isRotated = false;
+                if (i != 2)
+                {
+                    if (!isRotated)
+                    {
+                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] > ShapeY[2])&&(mustBeRotated[i]))
+                        {
+                            ShapeX[i] = ShapeX[i] - 2;
+                            isRotated = true;
+                           
+                        }
+                        else if ((ShapeX[i] < ShapeX[2]) && (ShapeY[i] > ShapeY[2]) && (mustBeRotated[i]))
+                        {
+                            ShapeY[i] = ShapeY[i] - 2;
+                            isRotated = true;                           
+                        }
                         
                     }
-                    
-                    if(rotated==false)
+                    if (!isRotated)
                     {
-                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] < ShapeY[2]))
+                        if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] < ShapeY[2]) && (mustBeRotated[i]))
                         {
                             ShapeY[i] = ShapeY[i] + 2;
-                            rotated = true;
+                            isRotated = true;                         
                         }
-                        else if ((ShapeX[i] < ShapeX[2]) && (ShapeY[i] < ShapeY[2]))
+                        else if ((ShapeX[i] < ShapeX[2]) && (ShapeY[i] < ShapeY[2]) && (mustBeRotated[i]))
                         {
                             ShapeX[i] = ShapeX[i] + 2;
-                            rotated = true;
+                            isRotated = true;
                         }
                     }
                 }
