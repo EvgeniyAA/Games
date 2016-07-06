@@ -27,8 +27,8 @@ namespace Tetris
         private void Form1_Load(object sender, EventArgs e)
         {
             ClientSize = new Size(Length*10 + 160, Length*20 + 50);
-            pictureBox1.Height = Length * 20 + 1;
-            pictureBox1.Width = Length * 10 + 1;
+            pictureBox1.Height = Length*20 + 1;
+            pictureBox1.Width = Length*10 + 1;
             pictureBox2.Location = new Point(Length*11, Length*2);
             pictureBox2.Size = new Size(Length*4, Length*4);
             Restart();
@@ -46,8 +46,8 @@ namespace Tetris
             {
                 draw.DrawLine(linesPen, cellSize*i, 0, cellSize*i, pictureBox1.Height);
                 draw.DrawLine(linesPen, 0, i*cellSize, pictureBox1.Width, i*cellSize);
-            }           
-            
+            }
+
             for (int j = 0; j < Length; j++)
             {
                 for (int i = 0; i < Length/2; i++)
@@ -136,11 +136,11 @@ namespace Tetris
                     board[CreatedShape.ShapeX[0], CreatedShape.ShapeY[0]] = CellType.Building;
                     CreatedShape.ShapeX.Clear();
                     CreatedShape.ShapeY.Clear();
-                    CreatedShape = new Shape(Length / 4, NextShape.Shape1);
+                    CreatedShape = new Shape(Length/4, NextShape.Shape1);
                     NextShape.ShapeX.Clear();
                     NextShape.ShapeY.Clear();
                     timer1.Interval = 600;
-                    NextShape = new Shape(2, '1');
+                    NextShape = new Shape(2);
                 }
                 else CreatedShape.ShapeY[0] = CreatedShape.ShapeY[0] + yOffset;
             }
@@ -162,11 +162,11 @@ namespace Tetris
                         NextShape.ShapeX.Clear();
                         NextShape.ShapeY.Clear();
                         timer1.Interval = 600;
-                        NextShape = new Shape(2, '1');
+                        NextShape = new Shape(2);
                     }
                 }
                 for (int i = 0; i < CreatedShape.ShapeX.Count; i++)
-                    CreatedShape.ShapeY[i] = CreatedShape.ShapeY[i] + yOffset;
+                    CreatedShape.ShapeY[i] += yOffset;
             }
         }
 
@@ -207,8 +207,8 @@ namespace Tetris
         private void Restart()
         {
             score = 0;
-            CreatedShape = new Shape(Length/4, '1');
-            NextShape = new Shape(2, '1');
+            CreatedShape = new Shape(Length/4);
+            NextShape = new Shape(2);
             for (int i = 0; i < Length/2; i++)
             {
                 for (int j = 0; j < Length; j++)
@@ -232,28 +232,21 @@ namespace Tetris
                 TestShape.ShapeX[i] = CreatedShape.ShapeX[i];
             }
         }
+
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if ((e.KeyCode == Keys.A) || (e.KeyCode == Keys.Left))
-            {
                 MovingToward("right");
-            }
             if ((e.KeyCode == Keys.D) || (e.KeyCode == Keys.Right))
-            {
                 MovingToward("left");
-            }
             if (e.KeyCode == Keys.S)
-            {
                 timer1.Interval = 100;
-            }
 
             if (e.KeyCode == Keys.W)
             {
                 if ((CreatedShape.Shape1 != '.') && (CreatedShape.Shape1 != 'O'))
-                {
                     CreateTestShape();
-                }
-                if ((CreatedShape.Shape1 != 'I')&&(CreatedShape.Shape1 != '.') && (CreatedShape.Shape1 != 'O'))
+                if ((CreatedShape.Shape1 != 'I') && (CreatedShape.Shape1 != '.') && (CreatedShape.Shape1 != 'O'))
                     if (CanRotate())
                         CreatedShape.Rotate();
                 if (CreatedShape.Shape1 == 'I')
@@ -262,9 +255,7 @@ namespace Tetris
             }
 
             if (e.KeyCode == Keys.Space)
-            {
                 timer1.Interval = 10;
-            }
             if (e.KeyCode == Keys.Escape)
             {
                 if (isPause)
@@ -294,12 +285,13 @@ namespace Tetris
 
         private bool CanRotate()
         {
-            if(TestShape.Shape1=='I')
+            if (TestShape.Shape1 == 'I')
                 TestShape.LineRotate();
             else TestShape.Rotate();
             for (int i = 0; i < TestShape.ShapeX.Count; i++)
             {
-                if ((TestShape.ShapeX[i] > Length/2 - 1) || (TestShape.ShapeX[i] < 0) || (TestShape.ShapeY[i] < 0)||(TestShape.ShapeY[i]>=Length))
+                if ((TestShape.ShapeX[i] > Length/2 - 1) || (TestShape.ShapeX[i] < 0) || (TestShape.ShapeY[i] < 0) ||
+                    (TestShape.ShapeY[i] >= Length))
                     return false;
                 if (board[TestShape.ShapeX[i], TestShape.ShapeY[i]] == CellType.Building)
                     return false;
@@ -312,7 +304,6 @@ namespace Tetris
         private void DropDown(int lineNumber)
         {
             for (int i = 0; i < Length/2; i++)
-
                 board[i, lineNumber] = CellType.Empty;
 
             for (int i = 0; i < Length/2; i++)
@@ -333,20 +324,15 @@ namespace Tetris
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.S)
-            {
                 timer1.Interval = 600;
-            }
         }
 
         private void pictureBox2_Paint(object sender, PaintEventArgs e)
         {
             int cellSize = pictureBox2.Width/4;
             for (int i = 0; i < NextShape.ShapeX.Count; i++)
-            {               
-                    e.Graphics.FillRectangle(shapeBrush,NextShape.ShapeX[i]*cellSize,NextShape.ShapeY[i]*cellSize,cellSize-1,cellSize-1);
-            }
-
-
+                e.Graphics.FillRectangle(shapeBrush, NextShape.ShapeX[i]*cellSize, NextShape.ShapeY[i]*cellSize,
+                    cellSize - 1, cellSize - 1);
         }
     }
 }
