@@ -59,7 +59,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(46, 17);
             this.label1.TabIndex = 1;
-            this.label1.Text = "label1";
+            this.label1.Text = "Score:0";
             this.label1.Paint += new System.Windows.Forms.PaintEventHandler(this.label1_Paint);
             // 
             // pictureBox2

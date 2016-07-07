@@ -101,7 +101,7 @@ namespace Tetris
                     for (int j = 0; j < ShapeX.Count; j++)
                     {
                         int t = j - 1;
-                        ShapeY[j] = ShapeY[j] + t;
+                        ShapeY[j] += t;
                     }
                 position = Position.FromTopToDown;
             }
@@ -234,13 +234,9 @@ namespace Tetris
                     if (!isRotated)
                     {
                         if ((ShapeX[i] > ShapeX[2]) && (ShapeY[i] < ShapeY[2]) && (mustBeRotated[i]))
-                        {
                             ShapeY[i] += 2;                    
-                        }
                         else if ((ShapeX[i] < ShapeX[2]) && (ShapeY[i] < ShapeY[2]) && (mustBeRotated[i]))
-                        {
                             ShapeX[i] += 2;
-                        }
                     }
                 }
             }
