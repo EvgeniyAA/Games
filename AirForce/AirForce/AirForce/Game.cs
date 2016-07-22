@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace AirForce
 {
@@ -13,7 +12,8 @@ namespace AirForce
         private readonly List<Shell> shells;
         private readonly List<Object> objects;
         public int Score;
-        
+        private bool stopShoot=true;
+        private int shellFrequency;
 
         public Game(int width, int height)
         {
@@ -32,31 +32,46 @@ namespace AirForce
                 plane.Draw(graphics);
         }
 
-        public void Update(Direction direction, bool isFire, int countOfTicks)
+        public void PressUp()
+        {
+            objects[0].ObjectDirection=Direction.Up;
+        }
+        public void PressDown()
+        {
+            objects[0].ObjectDirection = Direction.Down;
+        }
+        public void UnPress()
+        {
+            objects[0].ObjectDirection = Direction.None;
+        }
+
+        private void PlayerStartShoot()
+        {
+            shellFrequency++;   
+            if (!stopShoot&&shellFrequency%10==0)
+            {
+                CreateShell(Direction.Right, objects[0]);
+            }
+        }
+        public void StopAttack()
+        {
+            stopShoot = true;
+        }
+        public void StartAttack()
+        {
+            stopShoot = false;
+        }
+        public void Update(int countOfTicks)
         {
             foreach (Object plane in objects)
-            {
-                switch (direction)
-                {
-                    case Direction.Up:
-                        plane.Move(Direction.Up);
-                        break;
-                    case Direction.Down:
-                        plane.Move(Direction.Down);
-                        break;
-                    default:
-                        plane.Move(Direction.None);
-                        break;
-                }
-            }
-            if (isFire && (countOfTicks%10 == 0))
-                CreateShell(Direction.Right, objects[0]);
+                plane.Move();
+                
             if(countOfTicks%20==0)
                 CreateEnemyPlane();
             
-            foreach (Shell shell in shells)            
+            foreach (Shell shell in shells)
                 shell.ShellsMoving();
-
+            PlayerStartShoot();
             DeleteShells();
             DamagePlane();
             DeletePlanes();            
@@ -69,8 +84,9 @@ namespace AirForce
         public void DeletePlanes()
         {
             foreach (Object plane in objects)
-                if (plane.Hp == 0&&plane!=objects[0]) Score++;
-            objects.RemoveAll(plane => (objects[0] != plane && plane.Hp == 0));
+                if (plane.Hp == 0&&plane!=objects[0])
+                    Score++;
+            objects.RemoveAll(plane => (objects[0] != plane && plane.Hp <= 0));
         }
         private bool CheckShellIntersect(Shell checkingShell, Object checkingPlane)
         {
@@ -87,10 +103,9 @@ namespace AirForce
 
         private void DamagePlane()
         {
-            for (int index = 1; index < objects.Count; index++)
+            foreach (Object plane in objects)
             {
-                Object plane = objects[index];
-                if (CheckPlaneIntersect(objects[0], plane))
+                if(CheckPlaneIntersect(objects[0], plane)&&plane!=objects[0])
                     objects[0].TakeDamage();
             }
                 objects.RemoveAll(plane => (plane!=objects[0])&&CheckPlaneIntersect(objects[0], plane));
@@ -131,5 +146,7 @@ namespace AirForce
                     break;                   
             }
         }
+
+        
     }
 }

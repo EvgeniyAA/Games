@@ -14,9 +14,9 @@ namespace AirForce
             enemyFighterBrush = new SolidBrush(Color.LimeGreen);
         }
 
-        public override void Move(Direction direction)
+        public override void Move()
         {
-            base.Move(direction);
+            base.Move();
             Dodge(12);
         }
 

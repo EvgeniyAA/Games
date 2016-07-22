@@ -5,8 +5,8 @@ namespace AirForce
     public class MyPlane:Object
     {
         private readonly int pictureBoxHeight;
-        private readonly SolidBrush planeBrush;
-        private readonly Image myPlaneImage=Properties.Resources.myPlane;
+        private readonly Image myPlaneImage = Properties.Resources.myPlane;
+        public Direction Direction;
         public MyPlane(int planeX1, int planeY1, int pictureBoxHeight) : base(planeX1, planeY1)
         {
             this.pictureBoxHeight = pictureBoxHeight;
@@ -14,15 +14,15 @@ namespace AirForce
             PlaneHeight = 40;
             Speed = 5;
             Hp = 10;
-            planeBrush = new SolidBrush(Color.Blue);
+            ObjectDirection=Direction.None;
         }
 
-        public override void Move(Direction direction)
+        public override void Move()
         {
-            if ((direction == Direction.Up) && (PlaneY1 - Speed > 0))
+            if ((ObjectDirection == Direction.Up) && (PlaneY1 - Speed > 0))
                 PlaneY1 -= Speed;
 
-            if ((direction == Direction.Down) && (PlaneY1 + Speed + PlaneHeight < pictureBoxHeight))
+            if ((ObjectDirection == Direction.Down) && (PlaneY1 + Speed + PlaneHeight < pictureBoxHeight))
                 PlaneY1 += Speed;
         }
         //public override Direction GetDirection()
@@ -31,9 +31,7 @@ namespace AirForce
         //}
         public override void Draw(Graphics graphics)
         {
-            
-            graphics.DrawImage(myPlaneImage, new Point(PlaneX1,PlaneY1));
-            //graphics.FillRectangle(planeBrush, PlaneX1, PlaneY1, PlaneWidth, PlaneHeight);
+            graphics.DrawImageUnscaledAndClipped(myPlaneImage,new Rectangle(PlaneX1, PlaneY1, PlaneWidth, PlaneHeight));
         }
     }
 }

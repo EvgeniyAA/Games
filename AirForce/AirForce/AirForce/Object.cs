@@ -25,7 +25,7 @@ namespace AirForce
         {
             return ObjectDirection=Direction.None;
         }
-        public virtual void Move(Direction direction)
+        public virtual void Move()
         {
             PlaneX1 -= Speed;
         }

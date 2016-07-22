@@ -10,7 +10,6 @@ namespace AirForce
 
         public Direction Direction;
         private Game game;
-        private bool isFire;
         private int countOfTicks;
 
         public Form1()
@@ -34,22 +33,21 @@ namespace AirForce
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.W)
-                Direction = Direction.Up;
+                game.PressUp();
             if (e.KeyCode == Keys.S)
-                Direction = Direction.Down;
+                game.PressDown();
             if (e.KeyCode == Keys.Space)
-                isFire = true;
+                game.StartAttack();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             countOfTicks++;
-            game.Update(Direction, isFire, countOfTicks);
+            game.Update(countOfTicks);
             if (game.IsGameOver())
             {
                 timer1.Stop();
                 MessageBox.Show("Game Over! Score="+game.Score);
-                
             }
             pictureBox1.Refresh();
         }
@@ -57,9 +55,9 @@ namespace AirForce
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             if ((e.KeyCode == Keys.W) || (e.KeyCode==Keys.S))
-                Direction = Direction.None;
+                game.UnPress();
             if (e.KeyCode == Keys.Space)
-                isFire = false;
+                game.StopAttack();
         }
     }
 }
