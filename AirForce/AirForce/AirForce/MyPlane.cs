@@ -6,7 +6,7 @@ namespace AirForce
     {
         private readonly int pictureBoxHeight;
         private readonly SolidBrush planeBrush;
-        //private readonly Bitmap image;
+        private readonly Image myPlaneImage=Properties.Resources.myPlane;
         public MyPlane(int planeX1, int planeY1, int pictureBoxHeight) : base(planeX1, planeY1)
         {
             this.pictureBoxHeight = pictureBoxHeight;
@@ -15,8 +15,6 @@ namespace AirForce
             Speed = 5;
             Hp = 10;
             planeBrush = new SolidBrush(Color.Blue);
-            //image= new Bitmap(@"C:\Users\Asus\Desktop\Coding\Games\trunk\AirForce\AirForce\AirForce.myPlane.png");
-            //image=new Bitmap(planeX1,planeY1);
         }
 
         public override void Move(Direction direction)
@@ -33,10 +31,9 @@ namespace AirForce
         //}
         public override void Draw(Graphics graphics)
         {
-            //Graphics.FromImage(image);
             
-            //graphics.DrawImage(image,new Point(PlaneX1,PlaneY1));
-            graphics.FillRectangle(planeBrush, PlaneX1, PlaneY1, PlaneWidth, PlaneHeight);
+            graphics.DrawImage(myPlaneImage, new Point(PlaneX1,PlaneY1));
+            //graphics.FillRectangle(planeBrush, PlaneX1, PlaneY1, PlaneWidth, PlaneHeight);
         }
     }
 }
