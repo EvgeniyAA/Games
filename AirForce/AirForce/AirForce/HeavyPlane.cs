@@ -2,22 +2,21 @@
 
 namespace AirForce
 {
-    public class HeavyPlane : Object
+    public class HeavyPlane : GameObject
     {
-        private readonly SolidBrush enemyHeavyPlaneBrush ;
-        private readonly Image myHeavyPlaneImage = Properties.Resources.HeavyPlane3;
-        public HeavyPlane(int planeX1, int planeY1) : base(planeX1,planeY1)
+        private static readonly Image MyHeavyPlaneImage = Properties.Resources.HeavyPlane3;
+        public HeavyPlane(int objectX1, int objectY1) : base(objectX1,objectY1)
         {
-            PlaneWidth = 60;
-            PlaneHeight = 30;
+            ObjectWidth = 60;
+            ObjectHeight = 30;
             Speed = 1;
             Hp = 10;
-            enemyHeavyPlaneBrush = new SolidBrush(Color.HotPink);
+            ObjectType=ObjectType.EnemyPlane;
         }
 
         //public override void Move()
         //{
-        //    PlaneX1 -= Speed;
+        //    objectX1 -= Speed;
         //}
 
         public void Attack()
@@ -27,8 +26,7 @@ namespace AirForce
 
         public override void Draw(Graphics graphics)
         {
-            //graphics.FillRectangle(enemyHeavyPlaneBrush, PlaneX1, PlaneY1, PlaneWidth, PlaneHeight);
-            graphics.DrawImageUnscaledAndClipped(myHeavyPlaneImage, new Rectangle(PlaneX1, PlaneY1, PlaneWidth, PlaneHeight));
+            graphics.DrawImageUnscaledAndClipped(MyHeavyPlaneImage, new Rectangle(ObjectX1, ObjectY1, ObjectWidth, ObjectHeight));
         }
     }
 }

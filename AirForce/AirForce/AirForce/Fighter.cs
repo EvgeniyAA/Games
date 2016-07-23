@@ -2,16 +2,17 @@
 
 namespace AirForce
 {
-    public class Fighter : Object
+    public class Fighter : GameObject
     {
         private readonly SolidBrush enemyFighterBrush;
-        public Fighter(int planeX1, int planeY1) : base(planeX1,planeY1)
+        public Fighter(int objectX1, int objectY1) : base(objectX1,objectY1)
         {
-            PlaneWidth = 30;
-            PlaneHeight = 20;
+            ObjectWidth = 30;
+            ObjectHeight = 20;
             Speed = 2;
             Hp = 5;
             enemyFighterBrush = new SolidBrush(Color.LimeGreen);
+            ObjectType=ObjectType.EnemyPlane;
         }
 
         public override void Move()
@@ -22,7 +23,7 @@ namespace AirForce
 
         public override void Draw(Graphics graphics)
         {
-            graphics.FillRectangle(enemyFighterBrush, PlaneX1, PlaneY1, PlaneWidth, PlaneHeight);
+            graphics.FillRectangle(enemyFighterBrush, ObjectX1, ObjectY1, ObjectWidth, ObjectHeight);
         }
 
         public void Dodge(int myPlaneCoordY)
