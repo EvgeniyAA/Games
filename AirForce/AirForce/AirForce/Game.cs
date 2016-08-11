@@ -9,7 +9,7 @@ namespace AirForce
     {
         private readonly int width;
         private readonly int height;
-        private readonly Random rnd = new Random();
+        private static readonly Random Rnd = new Random();
         private readonly List<GameObject> objects;
         public int Score;
         private bool stopShoot=true;
@@ -19,7 +19,7 @@ namespace AirForce
         {
             this.width = width;
             this.height = height;
-            objects = new List<GameObject> {new MyPlane(width/22, height/2, height)};
+            objects= new List<GameObject> {new MyPlane(new Point(width/22,height/2),height)};
         }
 
         public void Draw(Graphics graphics)
@@ -62,8 +62,8 @@ namespace AirForce
                 
             if(countOfTicks%20==0)
                 CreateEnemyPlane();
-
             PlayerStartShoot();
+            EnableDodgeIfPlaneInLineWithShell();
             DeleteShells();
             DamagePlane();
             DeletePlanes();            
@@ -80,46 +80,56 @@ namespace AirForce
                     Score++;
             objects.RemoveAll(plane => plane.ObjectType == ObjectType.EnemyPlane && plane.Hp <= 0);
         }
-        private static bool CheckShellIntersect(GameObject checkingObject1, GameObject checkingObject2)
+        
+        private bool CheckCollision(GameObject checkingObject1, GameObject checkingObject2)
         {
-            return (checkingObject1.ObjectType == ObjectType.Shell)
-                && (checkingObject2.ObjectType == ObjectType.EnemyPlane)
-                   && CheckIntersect(checkingObject1, checkingObject2);
+            return CheckIntersect(checkingObject1, checkingObject2) && CheckObjectTypes(checkingObject1, checkingObject2);
         }
-        private static bool CheckPlaneIntersect(GameObject checkingPlane1, GameObject checkingPlane2)
-        {
-            return checkingPlane1.ObjectType == ObjectType.MyPlane
-                   && checkingPlane2.ObjectType == ObjectType.EnemyPlane
-                   && CheckIntersect(checkingPlane1, checkingPlane2);
-        }
-
-        private static bool CheckIntersect(GameObject checkingPlane1, GameObject checkingPlane2)
+        private static bool CheckIntersect(GameObject checkingObject1, GameObject checkingObject2)
         {
             return Rectangle.Intersect(
-                new Rectangle(checkingPlane1.ObjectX1, checkingPlane1.ObjectY1, checkingPlane1.ObjectWidth,
-                    checkingPlane1.ObjectHeight),
-                new Rectangle(checkingPlane2.ObjectX1, checkingPlane2.ObjectY1, checkingPlane2.ObjectWidth,
-                    checkingPlane2.ObjectHeight)) != Rectangle.Empty;
+                new Rectangle(checkingObject1.GameObjectPoint.X, checkingObject1.GameObjectPoint.Y, checkingObject1.GameObjectSize.X,
+                    checkingObject1.GameObjectSize.Y),
+                new Rectangle(checkingObject2.GameObjectPoint.X, checkingObject2.GameObjectPoint.Y, checkingObject2.GameObjectSize.X,
+                    checkingObject2.GameObjectSize.Y)) != Rectangle.Empty;
         }
 
+        private static bool CheckObjectTypes(GameObject checkingObject1, GameObject checkingObject2)
+        {
+            if (checkingObject1.ObjectType == ObjectType.MyPlane && checkingObject2.ObjectType == ObjectType.EnemyPlane ||
+                checkingObject2.ObjectType == ObjectType.Shell || checkingObject2.ObjectType == ObjectType.Bird ||
+                checkingObject2.ObjectType == ObjectType.Meteor || checkingObject2.ObjectType == ObjectType.Earth)
+                return true;
+            else 
+            if (checkingObject1.ObjectType == ObjectType.Shell &&
+                     checkingObject2.ObjectType == ObjectType.EnemyPlane ||
+                     checkingObject2.ObjectType == ObjectType.Meteor)
+                return true;
+            else 
+            if (checkingObject1.ObjectType == ObjectType.EnemyPlane &&
+                     checkingObject2.ObjectType == ObjectType.Meteor || checkingObject2.ObjectType == ObjectType.Earth)
+                return true;
+            return false;
+
+        }
         private void DamagePlane()
         {
             foreach (GameObject plane in objects)
             {
-                if (CheckPlaneIntersect(objects[0], plane) && plane != objects[0])
+                if (CheckCollision(objects[0], plane) && plane != objects[0])
                     objects[0].TakeDamage();
             }
-            objects.RemoveAll(plane => (plane != objects[0]) && CheckPlaneIntersect(objects[0], plane));
+            objects.RemoveAll(plane => (plane != objects[0]) && CheckCollision(objects[0], plane));
         }
 
         private void DeleteShells()
         {
-            objects.RemoveAll(shell => shell.ObjectType == ObjectType.Shell && shell.ObjectX1 >= width - shell.ObjectWidth);
+            objects.RemoveAll(shell => shell.ObjectType == ObjectType.Shell && shell.GameObjectPoint.X >= width - shell.GameObjectSize.X);
             foreach (GameObject shell in objects)
                 if (shell.ObjectType==ObjectType.Shell&&shell.ObjectDirection == Direction.Right)
                 {
                     foreach (GameObject plane in objects)
-                        if (CheckShellIntersect(shell, plane))
+                        if (CheckCollision(shell, plane)&&plane.ObjectType!=ObjectType.Shell)
                         {
                             plane.TakeDamage();
                             shell.TakeDamage();
@@ -127,38 +137,72 @@ namespace AirForce
                 }
             Score += objects.Count(Object => (Object.Hp <= 0&&Object.ObjectType==ObjectType.EnemyPlane));
             objects.RemoveAll(Object => Object.Hp <= 0);
-            //for (int i = 1; i < objects.Count-1; i++)
-            //{
-            //    for (int j = i+1; j < objects.Count; j++)
-            //    {
-            //        if(CheckShellIntersect(objects[i],objects[j])&&objects[i].ObjectType==ObjectType.Shell&&objects[j].ObjectType==ObjectType.EnemyPlane)
-            //            objects.RemoveAt(i);
-            //    }
-            //}
-            //foreach (GameObject plane in objects)
-            //{
-            //    objects.RemoveAll(shell => CheckShellIntersect(shell, plane));  
-            //}
         }
 
         public void CreateShell(Direction direction, GameObject plane)
         {
-            int shellX = plane.ObjectX1 + plane.ObjectWidth + 1;
-            int shellY = plane.ObjectY1 + plane.ObjectHeight/2;
-            objects.Add(new Shell(shellX, shellY,direction));
+            int shellX = plane.GameObjectPoint.X + plane.GameObjectSize.X + 1;
+            int shellY = plane.GameObjectPoint.Y + plane.GameObjectSize.Y / 2;
+            objects.Add(new Shell(new Point(shellX,shellY), direction));
+            
+        }
+
+        private void EnableDodgeIfPlaneInLineWithShell()
+        {
+            foreach (GameObject gameObject in objects)
+            {
+                if (gameObject is Fighter)
+                {
+                    foreach (GameObject shell in objects)
+                    {
+                        if (shell is Shell && CheckIsPlaneInLineWithShell(gameObject, shell) &&
+                            shell.ObjectDirection == Direction.Right&&gameObject.GetDirection()==Direction.None)
+                        {
+                            gameObject.DodgeCoord = NewRandomCoordYForFighterPlane(gameObject);
+                            if (gameObject.GameObjectPoint.Y > gameObject.DodgeCoord)
+                                gameObject.ObjectDirection = Direction.Up;
+                            else gameObject.ObjectDirection = Direction.Down;
+                        }
+                    }
+                    if ((gameObject.GetDirection() == Direction.Up &&
+                         gameObject.DodgeCoord >= gameObject.GameObjectPoint.Y) ||
+                        (gameObject.GetDirection() == Direction.Down &&
+                         gameObject.DodgeCoord <= gameObject.GameObjectPoint.Y))
+                        gameObject.ObjectDirection = Direction.None;
+                }
+            }
+        }
+
+        private int NewRandomCoordYForFighterPlane(GameObject gameObject)
+        {
+            int newObjectPoint = gameObject.GameObjectPoint.Y;
+            while (newObjectPoint <= gameObject.GameObjectPoint.Y + gameObject.GameObjectSize.Y 
+                && newObjectPoint >= gameObject.GameObjectPoint.Y)
+            {
+                newObjectPoint = Rnd.Next(objects[0].GameObjectPoint.Y/2, height - gameObject.GameObjectSize.Y);
+            }
+            return newObjectPoint;
+        }
+
+        private bool CheckIsPlaneInLineWithShell(GameObject checkingObject1, GameObject checkingObject2)
+        {
+            GameObject fighter = new Fighter(checkingObject1.GameObjectPoint);
+            GameObject shell = new Fighter(checkingObject2.GameObjectPoint);
+            shell.GameObjectPoint.X = fighter.GameObjectPoint.X;
+            return CheckIntersect(fighter, shell);
         }
 
         public void CreateEnemyPlane()
         {
-            int planeTypeNumber = rnd.Next(2);
-            int planeHeightCoord = rnd.Next(objects[0].ObjectHeight, height - objects[0].ObjectHeight);
+            int planeTypeNumber = Rnd.Next(2);
+            int planeHeightCoord = Rnd.Next(objects[0].GameObjectSize.Y, height - objects[0].GameObjectSize.Y);
             switch (planeTypeNumber)
             {
                 case 0:
-                    objects.Add(new HeavyPlane(width, planeHeightCoord));                    
+                    objects.Add(new HeavyPlane(new Point(width,planeHeightCoord)));                    
                     break;
                 case 1:
-                    objects.Add(new Fighter(width, planeHeightCoord));
+                    objects.Add(new Fighter(new Point(width, planeHeightCoord)));
                     break;
                 default: 
                     throw new ArgumentOutOfRangeException();

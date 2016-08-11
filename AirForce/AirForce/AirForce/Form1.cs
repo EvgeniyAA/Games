@@ -6,8 +6,6 @@ namespace AirForce
 {
     public partial class Form1 : Form
     {
-        // TODO: Moving some things to Game
-
         public Direction Direction;
         private Game game;
         private int countOfTicks;

@@ -12,25 +12,24 @@ namespace AirForce
         private readonly SolidBrush myshellsBrush;
         private readonly SolidBrush enemyshellsBrush;
 
-        public Shell(int objectX1, int objectY1, Direction direction) : base(objectX1, objectY1)
+        public Shell(Point shell, Direction direction) : base(shell)
         {
-            ObjectType= ObjectType.Shell;
-            ObjectDirection = direction;
+            GameObjectSize.X = 5;
+            GameObjectSize.Y = GameObjectSize.X;
             Speed = 3;
-            ObjectWidth = 5;
-            ObjectHeight = ObjectWidth;
-            Hp=1;
+            Hp = 1;
+            ObjectType = ObjectType.Shell;
+            ObjectDirection = direction;
             myshellsBrush = new SolidBrush(Color.Orange);
             enemyshellsBrush = new SolidBrush(Color.Fuchsia);
         }
 
-
         public override void Move()
         {
             if (ObjectDirection == Direction.Right)
-                ObjectX1 += Speed;
+                GameObjectPoint.X += Speed;
             else
-                ObjectY1 -= Speed;
+                GameObjectPoint.X -= Speed;
         }
 
         public override void Draw(Graphics graphics)
@@ -38,10 +37,10 @@ namespace AirForce
             switch (ObjectDirection)
             {
                 case Direction.Right:
-                    graphics.FillRectangle(myshellsBrush, ObjectX1, ObjectY1, ObjectWidth, ObjectHeight);
+                    graphics.FillRectangle(myshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
                     break;
                 default:
-                    graphics.FillRectangle(enemyshellsBrush, ObjectX1, ObjectY1, ObjectWidth, ObjectHeight);
+                    graphics.FillRectangle(enemyshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
                     break;
             }
         }

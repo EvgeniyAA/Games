@@ -1,34 +1,40 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace AirForce
 {
     public class Fighter : GameObject
     {
         private readonly SolidBrush enemyFighterBrush;
-        public Fighter(int objectX1, int objectY1) : base(objectX1,objectY1)
+
+        public Fighter(Point fighterPoint) : base(fighterPoint)
         {
-            ObjectWidth = 30;
-            ObjectHeight = 20;
+            GameObjectSize.X = 30;
+            GameObjectSize.Y = 20;
             Speed = 2;
             Hp = 5;
             enemyFighterBrush = new SolidBrush(Color.LimeGreen);
-            ObjectType=ObjectType.EnemyPlane;
+            ObjectType = ObjectType.EnemyPlane;
+            ObjectDirection = Direction.None;
+        }
+
+        public override void Draw(Graphics graphics)
+        {
+            graphics.FillRectangle(enemyFighterBrush,GameObjectPoint.X,GameObjectPoint.Y,GameObjectSize.X, GameObjectSize.Y);
         }
 
         public override void Move()
         {
             base.Move();
-            Dodge(12);
+            Dodge();
         }
 
-        public override void Draw(Graphics graphics)
+        public void Dodge()
         {
-            graphics.FillRectangle(enemyFighterBrush, ObjectX1, ObjectY1, ObjectWidth, ObjectHeight);
-        }
-
-        public void Dodge(int myPlaneCoordY)
-        { 
-            //if()
+            if (ObjectDirection == Direction.Up)
+                GameObjectPoint.Y--;
+            if (ObjectDirection == Direction.Down)
+                GameObjectPoint.Y++;
         }
     }
 }
