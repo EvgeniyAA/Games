@@ -18,6 +18,11 @@ namespace AirForce
             ObjectDirection = Direction.None;
             ObjectType = ObjectType.MyPlane;
         }
+
+        public MyPlane(Point myPlanePoint) : this(myPlanePoint, 1)
+        {
+        }
+
         public override void Move()
         {
             if ((ObjectDirection == Direction.Up) && (GameObjectPoint.Y - Speed > 0))

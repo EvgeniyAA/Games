@@ -12,6 +12,7 @@ namespace AirForce
         public Point GameObjectPoint;
         public Point GameObjectSize;
         public int DodgeCoord;
+        public bool IsNeededToCreateShell = false;
 
         protected GameObject(Point gameObjectPoint)
         {
