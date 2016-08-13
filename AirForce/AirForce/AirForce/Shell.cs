@@ -9,8 +9,8 @@ namespace AirForce
 {
     public class Shell : GameObject
     {
-        private readonly SolidBrush myshellsBrush;
-        private readonly SolidBrush enemyshellsBrush;
+        private static readonly SolidBrush MyshellsBrush = new SolidBrush(Color.Orange);
+        private static readonly SolidBrush EnemyshellsBrush = new SolidBrush(Color.Fuchsia);
 
         public Shell(Point shell, Direction direction) : base(shell)
         {
@@ -20,8 +20,6 @@ namespace AirForce
             Hp = 1;
             ObjectType = ObjectType.Shell;
             ObjectDirection = direction;
-            myshellsBrush = new SolidBrush(Color.Orange);
-            enemyshellsBrush = new SolidBrush(Color.Fuchsia);
         }
 
         public override void Move()
@@ -37,10 +35,10 @@ namespace AirForce
             switch (ObjectDirection)
             {
                 case Direction.Right:
-                    graphics.FillRectangle(myshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
+                    graphics.FillRectangle(MyshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
                     break;
                 default:
-                    graphics.FillRectangle(enemyshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
+                    graphics.FillRectangle(EnemyshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
                     break;
             }
         }

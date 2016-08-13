@@ -18,6 +18,7 @@ namespace AirForce
         private void Form1_Load(object sender, EventArgs e)
         {
             ClientSize = new Size(1100, 600);
+            pictureBox1.BackColor= Color.AliceBlue;
             pictureBox1.Width = 1100;
             pictureBox1.Height = 580;
             game = new Game(pictureBox1.Width,pictureBox1.Height);

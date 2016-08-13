@@ -6,7 +6,7 @@ namespace AirForce
     public class MyPlane : GameObject
     {
         private readonly int pictureBoxHeight;
-        private static readonly Image MyPlaneImage = Properties.Resources.myPlane;
+        private static readonly Image MyPlaneImage = Properties.Resources.myPlane1;
 
         public MyPlane(Point myPlanePoint, int pictureBoxHeight) : base(myPlanePoint)
         {
@@ -14,7 +14,7 @@ namespace AirForce
             GameObjectSize.X = 50;
             GameObjectSize.Y = 40;
             Speed = 5;
-            Hp = 10;
+            Hp = 20;
             ObjectDirection = Direction.None;
             ObjectType = ObjectType.MyPlane;
         }

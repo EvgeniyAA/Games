@@ -5,7 +5,7 @@ namespace AirForce
 {
     public class HeavyPlane : GameObject
     {
-        private static readonly Image MyHeavyPlaneImage = Properties.Resources.HeavyPlane3;
+        private static readonly Image MyHeavyPlaneImage = Properties.Resources.HeavyPlane31;
 
         public HeavyPlane(Point heavyPlane) : base(heavyPlane)
         {

@@ -10,9 +10,9 @@ namespace AirForce
         private readonly int width;
         private readonly int height;
         private static readonly Random Rnd = new Random();
-        private readonly List<GameObject> objects;
+        public readonly List<GameObject> objects;
         public int Score;
-        private bool stopShoot=true;
+        private bool isPlayerShootint;
         private int shellFrequency;
 
         public Game(int width, int height)
@@ -44,16 +44,16 @@ namespace AirForce
         private void PlayerStartShoot()
         {
             shellFrequency++;   
-            if (!stopShoot&&shellFrequency%10==0)
+            if (isPlayerShootint&&shellFrequency%10==0)
                 CreateShell(Direction.Right, objects[0]);       
         }
         public void StopAttack()
         {
-            stopShoot = true;
+            isPlayerShootint = false;
         }
         public void StartAttack()
         {
-            stopShoot = false;
+            isPlayerShootint = true;
         }
         public void Update(int countOfTicks)
         {
@@ -73,7 +73,7 @@ namespace AirForce
         }
         public bool IsGameOver()
         {
-            return objects[0].Hp == 0;
+            return objects[0].Hp <= 0;
         }
 
         public void DeletePlanes()
@@ -81,7 +81,7 @@ namespace AirForce
             foreach (GameObject plane in objects)
                 if (plane.Hp == 0&&plane.ObjectType==ObjectType.EnemyPlane)
                     Score++;
-            objects.RemoveAll(plane => plane.ObjectType == ObjectType.EnemyPlane && plane.Hp <= 0);
+            objects.RemoveAll(plane => plane.ObjectType == ObjectType.EnemyPlane && (plane.Hp <= 0||plane.GameObjectPoint.X+plane.GameObjectSize.X<=0));
         }
         
         private bool CheckCollision(GameObject checkingObject1, GameObject checkingObject2)
@@ -125,9 +125,9 @@ namespace AirForce
             objects.RemoveAll(plane => (plane != objects[0]) && CheckCollision(objects[0], plane));
         }
 
-        private void DeleteShells()
+        public void DeleteShells()
         {
-            objects.RemoveAll(shell => shell.ObjectType == ObjectType.Shell && shell.GameObjectPoint.X >= width - shell.GameObjectSize.X&&shell.GameObjectPoint.X<=0);
+            objects.RemoveAll(shell => shell.ObjectType == ObjectType.Shell && (shell.GameObjectPoint.X >= width - shell.GameObjectSize.X||shell.GameObjectPoint.X<=0));
             foreach (GameObject shell in objects)
                 if (shell.ObjectType==ObjectType.Shell&&shell.ObjectDirection == Direction.Right)
                 {
@@ -138,7 +138,7 @@ namespace AirForce
                             shell.TakeDamage();
                         }
                 }
-            Score += objects.Count(Object => (Object.Hp <= 0&&Object.ObjectType==ObjectType.EnemyPlane));
+            Score += objects.Count(Object => (Object.Hp <= 0 && Object.ObjectType == ObjectType.EnemyPlane));
             objects.RemoveAll(Object => Object.Hp <= 0);
         }
 
@@ -191,19 +191,14 @@ namespace AirForce
         }
 
         private bool CheckIsPlaneInLineWithSomeObject(GameObject checkingObject1, GameObject checkingObject2)
-        {
-            GameObject checkingGameObject1;
-            if (checkingObject1 is Fighter)
-                checkingGameObject1 = new Fighter(checkingObject1.GameObjectPoint);
-            else            
-                checkingGameObject1 = new HeavyPlane(checkingObject1.GameObjectPoint);            
+        {          
             GameObject checkingGameObject2;
             if(checkingObject2 is Shell)
                 checkingGameObject2 = new Shell(checkingObject2.GameObjectPoint,checkingObject2.GetDirection());
             else
                 checkingGameObject2 = new MyPlane(checkingObject2.GameObjectPoint);
-            checkingGameObject2.GameObjectPoint.X = checkingGameObject1.GameObjectPoint.X;
-            return CheckIntersect(checkingGameObject1, checkingGameObject2);
+            checkingGameObject2.GameObjectPoint.X = checkingObject1.GameObjectPoint.X;
+            return CheckIntersect(checkingObject1, checkingGameObject2);
         }
 
         private void AttackIfPlaneInLineWithShell()
@@ -220,7 +215,6 @@ namespace AirForce
             }
             objects.AddRange(shellsToAdd);
             shellsToAdd.Clear();
-            
         }
 
         public void CreateEnemyPlane()

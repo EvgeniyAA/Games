@@ -63,9 +63,9 @@ namespace AirForce.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap HeavyPlane3 {
+        internal static System.Drawing.Bitmap HeavyPlane31 {
             get {
-                object obj = ResourceManager.GetObject("HeavyPlane3", resourceCulture);
+                object obj = ResourceManager.GetObject("HeavyPlane31", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace AirForce.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap myPlane {
+        internal static System.Drawing.Bitmap myPlane1 {
             get {
-                object obj = ResourceManager.GetObject("myPlane", resourceCulture);
+                object obj = ResourceManager.GetObject("myPlane1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
