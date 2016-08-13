@@ -17,9 +17,9 @@ namespace AirForce
             Game game = new Game(1,1);
             Direction direction=Direction.None;
             GameObject shell = new Shell(new Point(-1,-1), direction);
-            game.objects[0]=shell; //in Game myPlane is objects[0]
-            game.DeleteShells();
-            Assert.AreEqual(0, game.objects.Count);
+            game.Objects = new List<GameObject> {shell};
+            game.DamageObjects();
+            Assert.AreEqual(0, game.Objects.Count);
         }
 
         [Test]
@@ -27,10 +27,10 @@ namespace AirForce
         {
             Game game = new Game(1, 1);
             GameObject heavyPlane = new HeavyPlane(new Point(-60,0));
-            game.objects[0]= heavyPlane;
-            game.objects.Add(new Fighter(new Point(-game.objects[0].GameObjectSize.X, 0)));
-            game.DeletePlanes();
-            Assert.AreEqual(0, game.objects.Count);
+            game.Objects = new List<GameObject> {heavyPlane};
+            game.Objects.Add(new Fighter(new Point(-game.Objects[0].GameObjectSize.X, 0)));
+            game.DeleteWithoutHpOrIfOutside();
+            Assert.AreEqual(0, game.Objects.Count);
         }
     }
 }

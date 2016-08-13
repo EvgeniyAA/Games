@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="HeavyPlane.cs" />
+    <Compile Include="Meteor.cs" />
     <Compile Include="MyPlane.cs" />
     <Compile Include="ObjectType.cs" />
     <Compile Include="Program.cs" />
@@ -109,6 +110,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="myPlane.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fighter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="meteor.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

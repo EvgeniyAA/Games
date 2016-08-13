@@ -22,10 +22,12 @@ namespace AirForce
             pictureBox1.Width = 1100;
             pictureBox1.Height = 580;
             game = new Game(pictureBox1.Width,pictureBox1.Height);
+            game.Restart();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
+            pictureBox1.BackColor = Color.FromArgb(countOfTicks % 255, countOfTicks % 255, countOfTicks % 255);
             game.Draw(e.Graphics);            
         }
 
@@ -47,6 +49,8 @@ namespace AirForce
             {
                 timer1.Stop();
                 MessageBox.Show("Game Over! Score="+game.Score);
+                game.Restart();
+                timer1.Start();
             }
             pictureBox1.Refresh();
         }
