@@ -15,15 +15,6 @@ namespace AirForce
             Hp = 10;
             ObjectType = ObjectType.EnemyPlane;
         }
-        //public override void Move()
-        //{
-        //    objectX1 -= Speed;
-        //}
-
-        public void Attack()
-        {
-            //if()
-        }
 
         public override void Draw(Graphics graphics)
         {

@@ -97,12 +97,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="myPlane.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HeavyPlane3.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>

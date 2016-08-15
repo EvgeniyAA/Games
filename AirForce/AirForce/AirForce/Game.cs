@@ -83,7 +83,6 @@ namespace AirForce
             AttackIfEnemyPlaneInLineWithMyPlane();
             EnableDodgeIfPlaneInLineWithShell();
             DamageObjects();
-            DeleteObjectsIfCollisionWithMyPlane();
             DeleteWithoutHpOrIfOutside();
         }
 
@@ -153,16 +152,14 @@ namespace AirForce
                 checkingObject2.ObjectType == ObjectType.Meteor || checkingObject2.ObjectType == ObjectType.Earth))
                 return true;
             else if (checkingObject1.ObjectType == ObjectType.Shell && checkingObject1.ObjectDirection == Direction.Right &&
-                     (checkingObject2.ObjectType == ObjectType.EnemyPlane ||
-                     checkingObject2.ObjectType == ObjectType.Meteor))
+                     checkingObject2.ObjectType == ObjectType.Meteor)
                 return true;
             else if (checkingObject1.ObjectType == ObjectType.Shell &&
                      checkingObject1.ObjectDirection == Direction.Left &&
-                     (checkingObject2.ObjectType == ObjectType.MyPlane ||
-                     checkingObject2.ObjectType == ObjectType.Meteor))
+                     checkingObject2.ObjectType == ObjectType.Meteor)
                 return true;
-            else if (checkingObject1.ObjectType == ObjectType.EnemyPlane &&
-                     (checkingObject2.ObjectType == ObjectType.Meteor ||
+            else if (checkingObject1.ObjectType == ObjectType.Meteor &&
+                     (checkingObject2.ObjectType == ObjectType.EnemyPlane ||
                      checkingObject2.ObjectType == ObjectType.Earth))
                 return true;
             return false;
@@ -220,12 +217,6 @@ namespace AirForce
             Objects.AddRange(shellsToAdd);
             shellsToAdd.Clear();
         }
-
-        private void DeleteObjectsIfCollisionWithMyPlane()
-        {
-            Objects.RemoveAll(plane => CheckCollision(Objects[0], plane));
-        }
-
         public void IncreaseScore()
         {
             Score += Objects.Count(Object => (Object.Hp <= 0 && Object.ObjectType == ObjectType.EnemyPlane));
@@ -247,10 +238,11 @@ namespace AirForce
                 foreach (GameObject gameObject2 in Objects)
                     if (CheckCollision(gameObject1, gameObject2))
                     {
-                        if (gameObject1.ObjectType != ObjectType.MyPlane && gameObject2.ObjectType == ObjectType.Meteor)
+                        if (gameObject1.ObjectType == ObjectType.MyPlane ||
+                            (gameObject1.ObjectType == ObjectType.Meteor && gameObject2.ObjectType != ObjectType.MyPlane))
                         {
-                            gameObject1.Hp = 0;
-                            gameObject2.TakeDamage();
+                            gameObject2.Hp = 0;
+                            gameObject1.TakeDamage();
                         }
                         else
                         {
