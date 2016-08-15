@@ -5,7 +5,7 @@ namespace AirForce
 {
     public class HeavyPlane : GameObject
     {
-        private static readonly Image MyHeavyPlaneImage = Properties.Resources.HeavyPlane31;
+        private static readonly Bitmap MyHeavyPlaneImage = Properties.Resources.HeavyPlane31;
 
         public HeavyPlane(Point heavyPlane) : base(heavyPlane)
         {
@@ -18,7 +18,7 @@ namespace AirForce
 
         public override void Draw(Graphics graphics)
         {
-            graphics.DrawImageUnscaledAndClipped(MyHeavyPlaneImage, new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
+            graphics.DrawImage(MyHeavyPlaneImage, new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
         }
     }
 }

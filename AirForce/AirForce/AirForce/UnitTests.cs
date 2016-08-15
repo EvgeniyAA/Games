@@ -18,7 +18,7 @@ namespace AirForce
             Direction direction=Direction.None;
             GameObject shell = new Shell(new Point(-1,-1), direction);
             game.Objects = new List<GameObject> {shell};
-            game.DamageObjects();
+            game.DeleteWithoutHpOrIfOutside();
             Assert.AreEqual(0, game.Objects.Count);
         }
 

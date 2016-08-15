@@ -152,7 +152,7 @@ namespace AirForce
                 checkingObject2.ObjectType == ObjectType.Meteor || checkingObject2.ObjectType == ObjectType.Earth))
                 return true;
             else if (checkingObject1.ObjectType == ObjectType.Shell && checkingObject1.ObjectDirection == Direction.Right &&
-                     checkingObject2.ObjectType == ObjectType.Meteor)
+                     (checkingObject2.ObjectType == ObjectType.Meteor||checkingObject2.ObjectType==ObjectType.EnemyPlane))
                 return true;
             else if (checkingObject1.ObjectType == ObjectType.Shell &&
                      checkingObject1.ObjectDirection == Direction.Left &&

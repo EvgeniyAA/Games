@@ -6,7 +6,7 @@ namespace AirForce
     public class MyPlane : GameObject
     {
         private readonly int pictureBoxHeight;
-        private static readonly Image MyPlaneImage = Properties.Resources.myPlane1;
+        private static readonly Bitmap MyPlaneImage = Properties.Resources.myPlane1;
 
         public MyPlane(Point myPlanePoint, int pictureBoxHeight) : base(myPlanePoint)
         {
@@ -34,7 +34,7 @@ namespace AirForce
 
         public override void Draw(Graphics graphics)
         {
-            graphics.DrawImageUnscaledAndClipped(MyPlaneImage,new Rectangle(GameObjectPoint.X,GameObjectPoint.Y,GameObjectSize.X,GameObjectSize.Y));
+            graphics.DrawImage(MyPlaneImage,new Rectangle(GameObjectPoint.X,GameObjectPoint.Y,GameObjectSize.X,GameObjectSize.Y));
         }
 
     }

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirForce
 {
@@ -11,7 +7,6 @@ namespace AirForce
     {
         private static readonly Bitmap MeteorImage = Properties.Resources.meteor;
         private static readonly Random Rnd = new Random();
-        private bool currentlyAnimating = false;
         public Meteor(int pictureBoxWidth)
         {
             GameObjectSize.X = Rnd.Next(10,51);
@@ -30,25 +25,8 @@ namespace AirForce
                 GameObjectPoint.X -= Speed;
         }
 
-        //public void AnimateImage()
-        //{
-        //    if (!currentlyAnimating)
-        //    {
-        //        ImageAnimator.Animate(MeteorImage,new EventHandler(this.OnFrameChanged));
-        //        currentlyAnimating = true;
-        //    }
-        //}
-
-        //private void OnFrameChanged(object sender, EventArgs e)
-        //{
-            
-        //    this.Invalidate();
-        //}
-
         public override void Draw(Graphics graphics)
         {
-            //AnimateImage();
-            //ImageAnimator.UpdateFrames();
             graphics.DrawImage(MeteorImage,
                 new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
         }
