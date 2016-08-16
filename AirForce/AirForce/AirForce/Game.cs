@@ -14,7 +14,7 @@ namespace AirForce
         public int Score;
         private bool isPlayerShootint;
         private int shellFrequency;
-
+        public Level GameLevel;
         public Game(int width, int height)
         {
             this.width = width;
@@ -33,6 +33,7 @@ namespace AirForce
             Objects = new List<GameObject> {new MyPlane(new Point(width/22, height/2), height)};
             isPlayerShootint = false;
             shellFrequency = 0;
+            GameLevel = new Level();
         }
 
         public void Draw(Graphics graphics)
@@ -77,7 +78,7 @@ namespace AirForce
         {
             foreach (GameObject Object in Objects)
                 Object.Move();
-            if (countOfTicks%20 == 0)
+            if (countOfTicks%GameLevel.Frequency == 0)
                 CreateEnemyPlane();
             PlayerStartShoot();
             AttackIfEnemyPlaneInLineWithMyPlane();
@@ -99,7 +100,7 @@ namespace AirForce
 
         public void CreateEnemyPlane()
         {
-            int planeTypeNumber = Rnd.Next(3);
+            int planeTypeNumber = Rnd.Next(GameLevel.PlaneTypesOnLevel);
             int planeHeightCoord = Rnd.Next(Objects[0].GameObjectSize.Y, height - Objects[0].GameObjectSize.Y);
             switch (planeTypeNumber)
             {
@@ -177,9 +178,7 @@ namespace AirForce
                             shell.ObjectDirection == Direction.Right && gameObject.GetDirection() == Direction.None)
                         {
                             gameObject.DodgeCoord = NewRandomCoordYForFighterPlane(gameObject);
-                            if (gameObject.GameObjectPoint.Y > gameObject.DodgeCoord)
-                                gameObject.ObjectDirection = Direction.Up;
-                            else gameObject.ObjectDirection = Direction.Down;
+                            gameObject.ObjectDirection = gameObject.GameObjectPoint.Y > gameObject.DodgeCoord ? Direction.Up : Direction.Down;
                         }
                     }
                     if ((gameObject.GetDirection() == Direction.Up &&
@@ -217,9 +216,15 @@ namespace AirForce
             Objects.AddRange(shellsToAdd);
             shellsToAdd.Clear();
         }
-        public void IncreaseScore()
+        public void IncreaseScore() 
         {
             Score += Objects.Count(Object => (Object.Hp <= 0 && Object.ObjectType == ObjectType.EnemyPlane));
+            GameLevel.Killed += Objects.Count(Object => (Object.Hp <= 0 && Object.ObjectType == GameLevel.TypeToKill));
+            if (GameLevel.CountToKill==GameLevel.Killed)
+            {
+                GameLevel.UpGameLevel();
+                Score = 0;
+            }
         }
 
         public void DeleteWithoutHpOrIfOutside()
@@ -242,6 +247,7 @@ namespace AirForce
                             (gameObject1.ObjectType == ObjectType.Meteor && gameObject2.ObjectType != ObjectType.MyPlane))
                         {
                             gameObject2.Hp = 0;
+                            
                             gameObject1.TakeDamage();
                         }
                         else

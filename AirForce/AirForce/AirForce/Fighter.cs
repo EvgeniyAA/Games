@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace AirForce
 {
@@ -18,7 +17,10 @@ namespace AirForce
 
         public override void Draw(Graphics graphics)
         {
-            graphics.DrawImage(FighterImage, new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
+            if (Hp <= 0)
+                graphics.DrawImage(ExplosionImage, new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
+            else
+                graphics.DrawImage(FighterImage, new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
         }
 
         public override void Move()

@@ -1,10 +1,12 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using AirForce.Properties;
 
 namespace AirForce
 {
+
     public abstract class GameObject
     {
+        public  static readonly Bitmap ExplosionImage = Resources.Explosion;
         public int Speed;
         public int Hp;
         public Direction ObjectDirection;

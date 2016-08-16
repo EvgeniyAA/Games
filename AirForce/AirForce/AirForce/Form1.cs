@@ -9,22 +9,35 @@ namespace AirForce
         public Direction Direction;
         private Game game;
         private int countOfTicks;
-
         public Form1()
         {
             InitializeComponent();
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
-            ClientSize = new Size(1100, 600);
+        {           
+            pictureBox1.Location = new Point(0,0);
             pictureBox1.BackColor= Color.AliceBlue;
-            pictureBox1.Width = 1100;
-            pictureBox1.Height = 580;
+            pictureBox1.Width = ClientSize.Width;
+            pictureBox1.Height = ClientSize.Height-100;
+            hpLabel.Location = new Point(0, pictureBox1.Height);
+            HpBar.Location= new Point(0,hpLabel.Height+pictureBox1.Height);
+            InfoLabel.Location= new Point(hpLabel.Width+10, pictureBox1.Height);
+            textBoxInfo.Location = new Point(hpLabel.Width+10,pictureBox1.Height+InfoLabel.Height);
+            textBoxInfo.SelectionStart = textBoxInfo.Text.Length;
+            textBoxInfo.ScrollToCaret();
             game = new Game(pictureBox1.Width,pictureBox1.Height);
             game.Restart();
         }
 
+        private void InfoTextBoxUpdate()
+        {
+            string info="";
+            info += "Level "+game.GameLevel.LevelNumber + Environment.NewLine;
+            info += "Need to kill " + (game.GameLevel.CountToKill-game.GameLevel.Killed + " "+game.GameLevel.TypeToKill +
+                    " to complete the level  ");
+            textBoxInfo.Text = info;
+        }
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             pictureBox1.BackColor = Color.FromArgb(countOfTicks % 255, countOfTicks % 255, countOfTicks % 255);
@@ -45,8 +58,11 @@ namespace AirForce
         {
             countOfTicks++;
             game.Update(countOfTicks);
+            HpBar.Value = game.Objects[0].Hp;
+            InfoTextBoxUpdate();
             if (game.IsGameOver())
             {
+                HpBar.Value = 0;
                 timer1.Stop();
                 MessageBox.Show("Game Over! Score="+game.Score);
                 game.Restart();

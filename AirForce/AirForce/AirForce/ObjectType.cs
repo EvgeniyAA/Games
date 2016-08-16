@@ -11,8 +11,8 @@ namespace AirForce
         MyPlane,
         Shell,
         EnemyPlane,
-        Bird,
         Meteor,
+        Bird,
         Earth
     }
 }
