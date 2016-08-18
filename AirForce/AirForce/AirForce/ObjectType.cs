@@ -9,7 +9,8 @@ namespace AirForce
     public enum ObjectType
     {
         MyPlane,
-        Shell,
+        MyShell,
+        EnemyShell,
         EnemyPlane,
         Meteor,
         Bird,

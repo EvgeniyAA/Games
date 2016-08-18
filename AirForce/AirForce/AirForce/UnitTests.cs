@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace AirForce
@@ -15,6 +11,7 @@ namespace AirForce
         public void TestShellsDeletionFromAbroad()
         {
             Game game = new Game(1,1);
+            game.GameLevel = new Level();
             Direction direction=Direction.None;
             GameObject shell = new Shell(new Point(-1,-1), direction);
             game.Objects = new List<GameObject> {shell};
@@ -26,6 +23,7 @@ namespace AirForce
         public void TestPlanesDeletionFromAbroad()
         {
             Game game = new Game(1, 1);
+            game.GameLevel = new Level();
             GameObject heavyPlane = new HeavyPlane(new Point(-60,0));
             game.Objects = new List<GameObject> {heavyPlane};
             game.Objects.Add(new Fighter(new Point(-game.Objects[0].GameObjectSize.X, 0)));

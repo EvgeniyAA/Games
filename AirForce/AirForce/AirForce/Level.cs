@@ -32,7 +32,7 @@ namespace AirForce
 
         private void RefreshTypeToKill()
         {
-            TypeToKill = (ObjectType) rnd.Next(2, PlaneTypesOnLevel+1);
+            TypeToKill = (ObjectType) rnd.Next(3, PlaneTypesOnLevel+2);
             Console.WriteLine(TypeToKill);
         }
     }

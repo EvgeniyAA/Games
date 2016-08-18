@@ -11,7 +11,7 @@ namespace AirForce
         {
             GameObjectSize.X = Rnd.Next(10,51);
             GameObjectSize.Y = GameObjectSize.X;
-            Speed = 2;
+            Speed = 5;
             Hp = 5;
             ObjectType=ObjectType.Meteor;
             GameObjectPoint.X = Rnd.Next(pictureBoxWidth/4, pictureBoxWidth-pictureBoxWidth/4);

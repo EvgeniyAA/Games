@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bird.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Fighter.cs" />
@@ -114,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Explosion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CrazyBird.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

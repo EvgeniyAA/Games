@@ -18,8 +18,8 @@ namespace AirForce
             GameObjectSize.Y = GameObjectSize.X;
             Speed = 3;
             Hp = 1;
-            ObjectType = ObjectType.Shell;
             ObjectDirection = direction;
+            ObjectType = direction==Direction.Right ? ObjectType.MyShell : ObjectType.EnemyShell;
         }
 
         public override void Move()
