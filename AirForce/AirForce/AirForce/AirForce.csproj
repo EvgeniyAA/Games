@@ -102,22 +102,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeavyPlane3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="myPlane.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Fighter.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="meteor.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Explosion.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CrazyBird.png" />
+    <None Include="Images\myPlane.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

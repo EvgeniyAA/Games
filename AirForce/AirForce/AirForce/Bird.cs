@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirForce
 {
@@ -18,7 +15,7 @@ namespace AirForce
             GameObjectPoint.Y = Rnd.Next(pictureBoxHeight - pictureBoxHeight/5, pictureBoxHeight - GameObjectSize.Y);
             GameObjectSize.X = 50;
             GameObjectSize.Y = 28;
-            Speed = 2;
+            Speed = 4;
             Hp = 1;
             ObjectType = ObjectType.Bird;
             ObjectDirection=Direction.Down;
@@ -29,9 +26,9 @@ namespace AirForce
             graphics.DrawImage(BirdImage, new Rectangle(GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y));
         }
 
-        public override void Move()
+        public override void Move(List<GameObject> objects)
         {
-            base.Move();
+            base.Move(objects);
             Fly();
         }
 

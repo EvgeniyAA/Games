@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirForce
 {
@@ -12,19 +8,18 @@ namespace AirForce
         private static readonly SolidBrush MyshellsBrush = new SolidBrush(Color.Orange);
         private static readonly SolidBrush EnemyshellsBrush = new SolidBrush(Color.Fuchsia);
 
-        public Shell(Point shell, Direction direction) : base(shell)
+        public Shell(Point shell, ObjectType objectType) : base(shell)
         {
-            GameObjectSize.X = 5;
+            GameObjectSize.X = 7;
             GameObjectSize.Y = GameObjectSize.X;
-            Speed = 3;
+            Speed = 7;
             Hp = 1;
-            ObjectDirection = direction;
-            ObjectType = direction==Direction.Right ? ObjectType.MyShell : ObjectType.EnemyShell;
+            ObjectType = objectType;
         }
 
-        public override void Move()
+        public override void Move(List<GameObject> objects)
         {
-            if (ObjectDirection == Direction.Right)
+            if (ObjectType==ObjectType.MyShell)
                 GameObjectPoint.X += Speed;
             else
                 GameObjectPoint.X -= Speed;
@@ -32,9 +27,9 @@ namespace AirForce
 
         public override void Draw(Graphics graphics)
         {
-            switch (ObjectDirection)
+            switch (ObjectType)
             {
-                case Direction.Right:
+                case ObjectType.MyShell:
                     graphics.FillRectangle(MyshellsBrush, GameObjectPoint.X, GameObjectPoint.Y, GameObjectSize.X, GameObjectSize.Y);
                     break;
                 default:

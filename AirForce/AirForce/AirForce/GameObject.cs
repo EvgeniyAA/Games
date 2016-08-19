@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using AirForce.Properties;
 
 namespace AirForce
@@ -14,7 +15,7 @@ namespace AirForce
         public Point GameObjectPoint;
         public Point GameObjectSize;
         public int DodgeCoord;
-        public bool IsNeededToCreateShell = false;
+        public bool IsNeededToCreateShell;
 
         protected GameObject(Point gameObjectPoint)
         {
@@ -30,7 +31,7 @@ namespace AirForce
             return ObjectDirection;
         }
 
-        public virtual void Move()
+        public virtual void Move(List<GameObject> objects)
         {
             GameObjectPoint.X -= Speed;
         }
@@ -41,5 +42,16 @@ namespace AirForce
         }
 
         public abstract void Draw(Graphics graphics);
+
+        protected bool CheckIsPlaneInLineWithSomeObject(GameObject checkingObject1, GameObject checkingObject2)
+        {
+            return  (checkingObject2.GameObjectPoint.Y <=
+                     checkingObject1.GameObjectPoint.Y +  checkingObject1.GameObjectSize.Y &&
+                     checkingObject2.GameObjectPoint.Y >= checkingObject1.GameObjectPoint.Y) ||
+                    (checkingObject2.GameObjectPoint.Y +  checkingObject2.GameObjectSize.Y >=
+                     checkingObject1.GameObjectPoint.Y &&
+                     checkingObject2.GameObjectPoint.Y +  checkingObject2.GameObjectSize.Y <=
+                     checkingObject1.GameObjectPoint.Y +  checkingObject1.GameObjectSize.Y);
+        }
     }
 }

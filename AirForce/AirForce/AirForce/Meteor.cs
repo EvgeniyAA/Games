@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace AirForce
@@ -9,20 +10,19 @@ namespace AirForce
         private static readonly Random Rnd = new Random();
         public Meteor(int pictureBoxWidth)
         {
-            GameObjectSize.X = Rnd.Next(10,51);
+            GameObjectSize.X = Rnd.Next(50,201);
             GameObjectSize.Y = GameObjectSize.X;
             Speed = 5;
             Hp = 5;
             ObjectType=ObjectType.Meteor;
             GameObjectPoint.X = Rnd.Next(pictureBoxWidth/4, pictureBoxWidth-pictureBoxWidth/4);
-            GameObjectPoint.Y = 0;
+            GameObjectPoint.Y = -GameObjectSize.Y;
         }
 
-        public override void Move()
+        public override void Move(List<GameObject> objects)
         {
             GameObjectPoint.Y += Speed;
-            //if (GameObjectPoint.Y%2 == 0)
-                GameObjectPoint.X -= Speed;
+            GameObjectPoint.X -= Speed;
         }
 
         public override void Draw(Graphics graphics)

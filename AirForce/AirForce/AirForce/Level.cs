@@ -20,20 +20,18 @@ namespace AirForce
         public void UpGameLevel()
         {
             LevelNumber++;
-            if(PlaneTypesOnLevel<3)
+            if(PlaneTypesOnLevel<4)
                 PlaneTypesOnLevel++;
             if(Frequency>20)
-                Frequency --;
+                Frequency -=Step;
             CountToKill += Step;
             Killed = 0;
             RefreshTypeToKill();
-
         }
 
         private void RefreshTypeToKill()
         {
-            TypeToKill = (ObjectType) rnd.Next(3, PlaneTypesOnLevel+2);
-            Console.WriteLine(TypeToKill);
+            TypeToKill = (ObjectType) rnd.Next(3, PlaneTypesOnLevel+1);
         }
     }
 }

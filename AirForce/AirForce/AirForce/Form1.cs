@@ -6,7 +6,6 @@ namespace AirForce
 {
     public partial class Form1 : Form
     {
-        public Direction Direction;
         private Game game;
         private int countOfTicks;
         public Form1()
@@ -17,7 +16,6 @@ namespace AirForce
         private void Form1_Load(object sender, EventArgs e)
         {           
             pictureBox1.Location = new Point(0,0);
-            pictureBox1.BackColor= Color.AliceBlue;
             pictureBox1.Width = ClientSize.Width;
             pictureBox1.Height = ClientSize.Height-100;
             hpLabel.Location = new Point(0, pictureBox1.Height);
@@ -46,9 +44,9 @@ namespace AirForce
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W)
+            if (e.KeyCode == Keys.W||e.KeyCode==Keys.Up)
                 game.PressUp();
-            if (e.KeyCode == Keys.S)
+            if (e.KeyCode == Keys.S || e.KeyCode == Keys.Down)
                 game.PressDown();
             if (e.KeyCode == Keys.Space)
                 game.StartAttack();
@@ -64,7 +62,7 @@ namespace AirForce
             {
                 HpBar.Value = 0;
                 timer1.Stop();
-                MessageBox.Show("Game Over! Score="+game.Score);
+                MessageBox.Show("Game Over on level - "+game.GameLevel.LevelNumber);
                 game.Restart();
                 timer1.Start();
             }
@@ -73,7 +71,7 @@ namespace AirForce
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            if ((e.KeyCode == Keys.W) || (e.KeyCode==Keys.S))
+            if ((e.KeyCode == Keys.W) || (e.KeyCode==Keys.S) || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
                 game.UnPress();
             if (e.KeyCode == Keys.Space)
                 game.StopAttack();
