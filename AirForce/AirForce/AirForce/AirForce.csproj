@@ -99,10 +99,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
+    <Content Include="Images\myPlane.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\myPlane.png" />
+    <Content Include="Images\CrazyBird.png" />
+    <Content Include="Images\Explosion.png" />
+    <Content Include="Images\Fighter.png" />
+    <Content Include="Images\HeavyPlane3.png" />
+    <Content Include="Images\meteor.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
