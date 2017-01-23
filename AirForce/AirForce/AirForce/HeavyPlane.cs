@@ -7,7 +7,7 @@ namespace AirForce
     public class HeavyPlane : GameObject
     {
         private static readonly Bitmap MyHeavyPlaneImage = Properties.Resources.HeavyPlane3;
-        private static int shellFrequency;
+        private int shellFrequency;
         public HeavyPlane(Point heavyPlane) : base(heavyPlane)
         {
             GameObjectSize.X = 60;
@@ -25,21 +25,8 @@ namespace AirForce
         }
         private void AttackIfEnemyPlaneInLineWithMyPlane(List<GameObject> objects)
         {
-            List<GameObject> shellsToAdd = new List<GameObject>();
-
-            foreach (GameObject gameObject in objects)
-            {
-                if (gameObject is HeavyPlane)
-                {
-                    if (CheckIsPlaneInLineWithSomeObject(gameObject, objects[0]) && shellFrequency % 100 == 0)
-                        shellsToAdd.Add(
-                            new Shell(
-                                new Point(gameObject.GameObjectPoint.X - 1,
-                                    gameObject.GameObjectPoint.Y + gameObject.GameObjectSize.Y / 2), ObjectType.EnemyShell));
-                }
-            }
-            objects.AddRange(shellsToAdd);
-            shellsToAdd.Clear();
+                    if (CheckIsPlaneInLineWithSomeObject(objects[0]) && shellFrequency % 100 == 0)
+                objects.Add(new Shell(new Point(GameObjectPoint.X - 1, GameObjectPoint.Y + GameObjectSize.Y / 2), ObjectType.EnemyShell));
         }
         public override void Draw(Graphics graphics)
         {

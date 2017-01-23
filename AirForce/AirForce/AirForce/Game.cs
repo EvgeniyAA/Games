@@ -17,12 +17,14 @@ namespace AirForce
         public Level GameLevel;
         private static readonly Dictionary<ObjectType, ObjectType[]> CollisionTypes= new Dictionary<ObjectType, ObjectType[]>
         {
+            { ObjectType.Earth,      new [] {ObjectType.EnemyPlane, ObjectType.EnemyShell, ObjectType.Meteor,ObjectType.MyPlane, ObjectType.MyShell }},
             { ObjectType.MyPlane,    new [] { ObjectType.EnemyPlane, ObjectType.EnemyShell, ObjectType.Bird, ObjectType.Meteor } },
             { ObjectType.Meteor,     new [] { ObjectType.EnemyPlane, ObjectType.MyShell,ObjectType.EnemyShell  } },
             { ObjectType.MyShell,    new [] { ObjectType.EnemyPlane } },
             { ObjectType.EnemyShell, new      ObjectType[] {  } },            
             { ObjectType.Bird,       new      ObjectType[] {  } },
-            { ObjectType.EnemyPlane, new      ObjectType[] {  } }
+            { ObjectType.EnemyPlane, new      ObjectType[] {  } },
+            
         };
 
         public Game(int width, int height)
@@ -41,6 +43,7 @@ namespace AirForce
             if (Objects != null)
                 Objects.Clear();
             Objects = new List<GameObject> {new MyPlane(new Point(width/22, height/2), height)};
+            Objects.Add(new Earth(height,width,100));
             isPlayerShooting = false;
             shellFrequency = 0;
             GameLevel = new Level();
@@ -188,6 +191,8 @@ namespace AirForce
                             checkingObject2.Hp = 0;
                             checkingObject1.TakeDamage();
                         }
+                        if (checkingObject2.ObjectType == ObjectType.Earth)
+                            checkingObject1.Hp = 0;
                         else
                         {
                             checkingObject1.TakeDamage();

@@ -56,7 +56,8 @@ namespace AirForce
         {
             countOfTicks++;
             game.Update(countOfTicks);
-            HpBar.Value = game.Objects[0].Hp;
+            if(game.Objects[0].Hp>=0)
+                HpBar.Value = game.Objects[0].Hp;
             InfoTextBoxUpdate();
             if (game.IsGameOver())
             {

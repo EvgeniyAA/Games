@@ -22,7 +22,7 @@ namespace AirForce
         [Test]
         public void TestPlanesDeletionFromAbroad()
         {
-            Game game = new Game(1, 1);
+            var game = new Game(1, 1);
             game.GameLevel = new Level();
             GameObject heavyPlane = new HeavyPlane(new Point(-60,0));
             game.Objects = new List<GameObject> {heavyPlane};

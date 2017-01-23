@@ -43,15 +43,15 @@ namespace AirForce
 
         public abstract void Draw(Graphics graphics);
 
-        protected bool CheckIsPlaneInLineWithSomeObject(GameObject checkingObject1, GameObject checkingObject2)
+        protected bool CheckIsPlaneInLineWithSomeObject(GameObject checkingObject2)
         {
             return  (checkingObject2.GameObjectPoint.Y <=
-                     checkingObject1.GameObjectPoint.Y +  checkingObject1.GameObjectSize.Y &&
-                     checkingObject2.GameObjectPoint.Y >= checkingObject1.GameObjectPoint.Y) ||
+                     GameObjectPoint.Y +  GameObjectSize.Y &&
+                     checkingObject2.GameObjectPoint.Y >= GameObjectPoint.Y) ||
                     (checkingObject2.GameObjectPoint.Y +  checkingObject2.GameObjectSize.Y >=
-                     checkingObject1.GameObjectPoint.Y &&
+                     GameObjectPoint.Y &&
                      checkingObject2.GameObjectPoint.Y +  checkingObject2.GameObjectSize.Y <=
-                     checkingObject1.GameObjectPoint.Y +  checkingObject1.GameObjectSize.Y);
+                     GameObjectPoint.Y +  GameObjectSize.Y);
         }
     }
 }

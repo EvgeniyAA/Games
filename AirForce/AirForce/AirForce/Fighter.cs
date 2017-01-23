@@ -34,39 +34,33 @@ namespace AirForce
             EnableDodgeIfPlaneInLineWithShell(objects);
             Dodge();
         }
-        private int NewRandomCoordYForFighterPlane(GameObject gameObject, GameObject myPlane)
+        private int NewRandomCoordYForFighterPlane(GameObject myPlane)
         {
-            int newObjectPoint = gameObject.GameObjectPoint.Y;
-            while (newObjectPoint <= gameObject.GameObjectPoint.Y + gameObject.GameObjectSize.Y
-                   && newObjectPoint >= gameObject.GameObjectPoint.Y)
+            int newObjectPoint = GameObjectPoint.Y;
+            while (newObjectPoint <= GameObjectPoint.Y + GameObjectSize.Y
+                   && newObjectPoint >= GameObjectPoint.Y)
             {
-                newObjectPoint = Rnd.Next(myPlane.GameObjectPoint.Y / 2, height - gameObject.GameObjectSize.Y);
+                newObjectPoint = Rnd.Next(myPlane.GameObjectPoint.Y / 2, height - GameObjectSize.Y);
             }
             return newObjectPoint;
         }
 
         private void EnableDodgeIfPlaneInLineWithShell(List<GameObject> objects)
         {
-            foreach (GameObject gameObject in objects)
-            {
-                if (gameObject is Fighter)
-                {
                     foreach (GameObject shell in objects)
                     {
-                        if (shell is Shell && CheckIsPlaneInLineWithSomeObject(gameObject, shell) &&
-                            shell.ObjectType == ObjectType.MyShell && gameObject.GetDirection() == Direction.None)
+                        if (shell is Shell && CheckIsPlaneInLineWithSomeObject( shell) &&
+                            shell.ObjectType == ObjectType.MyShell && GetDirection() == Direction.None)
                         {
-                            gameObject.DodgeCoord = NewRandomCoordYForFighterPlane(gameObject,objects[0]);
-                            gameObject.ObjectDirection = gameObject.GameObjectPoint.Y > gameObject.DodgeCoord ? Direction.Up : Direction.Down;
+                            DodgeCoord = NewRandomCoordYForFighterPlane(objects[0]);
+                            ObjectDirection = GameObjectPoint.Y > DodgeCoord ? Direction.Up : Direction.Down;
                         }
                     }
-                    if ((gameObject.GetDirection() == Direction.Up &&
-                         gameObject.DodgeCoord >= gameObject.GameObjectPoint.Y) ||
-                        (gameObject.GetDirection() == Direction.Down &&
-                         gameObject.DodgeCoord <= gameObject.GameObjectPoint.Y))
-                        gameObject.ObjectDirection = Direction.None;
-                }
-            }
+                    if ((GetDirection() == Direction.Up &&
+                         DodgeCoord >= GameObjectPoint.Y) ||
+                        (GetDirection() == Direction.Down &&
+                         DodgeCoord <= GameObjectPoint.Y))
+                        ObjectDirection = Direction.None;
         }
 
         public void Dodge()
