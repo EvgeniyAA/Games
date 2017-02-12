@@ -56,17 +56,18 @@ namespace AirForce
         {
             countOfTicks++;
             game.Update(countOfTicks);
-            if(game.Objects[0].Hp>=0)
-                HpBar.Value = game.Objects[0].Hp;
-            InfoTextBoxUpdate();
             if (game.IsGameOver())
             {
                 HpBar.Value = 0;
                 timer1.Stop();
-                MessageBox.Show("Game Over on level - "+game.GameLevel.LevelNumber);
+                MessageBox.Show("Game Over on level - " + game.GameLevel.LevelNumber);
                 game.Restart();
                 timer1.Start();
             }
+            if (game.Objects[0].Hp>=0)
+                HpBar.Value = game.Objects[0].Hp;
+            InfoTextBoxUpdate();
+
             pictureBox1.Refresh();
         }
 

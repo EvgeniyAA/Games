@@ -88,7 +88,10 @@
             // 
             // textBoxInfo
             // 
+            this.textBoxInfo.BackColor = System.Drawing.SystemColors.HighlightText;
             this.textBoxInfo.Enabled = false;
+            this.textBoxInfo.Font = new System.Drawing.Font("Times New Roman", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBoxInfo.ForeColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBoxInfo.Location = new System.Drawing.Point(160, 545);
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";

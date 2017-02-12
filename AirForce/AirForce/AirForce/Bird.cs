@@ -9,10 +9,10 @@ namespace AirForce
         private static readonly Bitmap BirdImage= Properties.Resources.CrazyBird;
         private static readonly Random Rnd = new Random();
         private int amplitude = 5;
-        public Bird(int pictureBoxWidth,int pictureBoxHeight)
+        public Bird(int pictureBoxWidth,int pictureBoxHeight,int earthHeight)
         {
             GameObjectPoint.X = pictureBoxWidth;
-            GameObjectPoint.Y = Rnd.Next(pictureBoxHeight - pictureBoxHeight/5, pictureBoxHeight - GameObjectSize.Y);
+            GameObjectPoint.Y = Rnd.Next(pictureBoxHeight - pictureBoxHeight/5 - earthHeight, pictureBoxHeight - GameObjectSize.Y -earthHeight);
             GameObjectSize.X = 50;
             GameObjectSize.Y = 28;
             Speed = 4;

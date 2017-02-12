@@ -7,6 +7,7 @@ namespace AirForce
 {
     internal class Game
     {
+        private const int EarthHeight = 100;
         private readonly int width;
         private readonly int height;
         private static readonly Random Rnd = new Random();
@@ -43,7 +44,7 @@ namespace AirForce
             if (Objects != null)
                 Objects.Clear();
             Objects = new List<GameObject> {new MyPlane(new Point(width/22, height/2), height)};
-            Objects.Add(new Earth(height,width,100));
+            Objects.Add(new Earth(height,width, EarthHeight));
             isPlayerShooting = false;
             shellFrequency = 0;
             GameLevel = new Level();
@@ -128,7 +129,7 @@ namespace AirForce
                     Objects.Add(new Meteor(width));
                     break;
                 case 3:
-                    Objects.Add(new Bird(width,height));
+                    Objects.Add(new Bird(width,height, EarthHeight));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
