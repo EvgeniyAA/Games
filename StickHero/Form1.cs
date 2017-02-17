@@ -5,11 +5,11 @@ using System.Windows.Forms;
 
 namespace StickHero
 {
-    public partial class Form1 : Form
+    public partial class GameForm : Form
     {
         private Game game;
-        private Rectangle rc;
-        public Form1()
+        private Rectangle pictureBoxRectangle;
+        public GameForm()
         {
             InitializeComponent();
         }
@@ -24,19 +24,19 @@ namespace StickHero
             Location= new Point(0,0);
             pictureBox.Size = new Size(800, 800);
             game = new Game(pictureBox.Height, pictureBox.Width);
-            label1.Location = new Point(pictureBox.Width/2,pictureBox.Height/5);
-            label1.Parent = pictureBox;
-            label1.Text = "0";
-            label1.BackColor = Color.Transparent;
-            game.ScoreChanged += score => label1.Text = score.ToString();
-            rc= new Rectangle(pictureBox.Location, pictureBox.Size);
+            ScoreLabel.Location = new Point(pictureBox.Width/2,pictureBox.Height/5);
+            ScoreLabel.Parent = pictureBox;
+            ScoreLabel.Text = "0";
+            ScoreLabel.BackColor = Color.Transparent;
+            game.ScoreChanged += score => ScoreLabel.Text = score.ToString();
+            pictureBoxRectangle= new Rectangle(pictureBox.Location, pictureBox.Size);
         }
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
-            using (LinearGradientBrush brush = new LinearGradientBrush(rc, Color.LightCyan, Color.Aquamarine, 45F))
+            using (LinearGradientBrush brush = new LinearGradientBrush(pictureBoxRectangle, Color.LightCyan, Color.Aquamarine, 45F))
             {
-                e.Graphics.FillRectangle(brush, rc);
+                e.Graphics.FillRectangle(brush, pictureBoxRectangle);
             }
             game.Draw(e.Graphics);
         }

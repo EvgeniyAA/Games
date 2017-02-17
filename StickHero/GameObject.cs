@@ -4,7 +4,7 @@ namespace StickHero
 {
     public class GameObject
     {
-        public Point ObjPoint;
-        public Point ObjSize;
+        public Point Point;
+        public Point Size;
     }
 }

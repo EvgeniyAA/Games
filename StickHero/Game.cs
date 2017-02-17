@@ -8,7 +8,7 @@ namespace StickHero
     {
         private const int AngleReduction = 5;
         private const int AnimationSpeed = 10;
-        private const int SecPlatformCenter = 20;
+        private const int DoublePointDiameter = 20;
 
         public event ScoreChanged ScoreChanged;
         public GameState GameState;
@@ -17,16 +17,16 @@ namespace StickHero
         private readonly GameObject firstPlatform = new GameObject();
         private readonly GameObject secondPlatform = new GameObject();
         private readonly Random rnd = new Random();
-        private readonly int height;
-        private readonly int width;
+        private readonly int pictureBoxHeight;
+        private readonly int pictureBoxWidth;
         private double stickLength;
         private int angle;
         private int score;
 
-        public Game(int height, int width)
+        public Game(int pictureBoxHeight, int pictureBoxWidth)
         {
-            this.height = height;
-            this.width = width;
+            this.pictureBoxHeight = pictureBoxHeight;
+            this.pictureBoxWidth = pictureBoxWidth;
             CreateWorld();
         }
 
@@ -34,17 +34,17 @@ namespace StickHero
         {
             graphics.FillRectangle(Brushes.Black, ToRectangle(firstPlatform));
             graphics.FillRectangle(Brushes.Black, ToRectangle(secondPlatform));
-            graphics.FillRectangle(Brushes.Red, secondPlatform.ObjPoint.X + secondPlatform.ObjSize.X / 2 - SecPlatformCenter / 2,
-                secondPlatform.ObjPoint.Y, SecPlatformCenter, 4);
+            graphics.FillRectangle(Brushes.Red, secondPlatform.Point.X + secondPlatform.Size.X / 2 - DoublePointDiameter / 2,
+                secondPlatform.Point.Y, DoublePointDiameter, 4);
 
             graphics.DrawImage(Resources.Hero, ToRectangle(hero));
-            graphics.DrawLine(new Pen(Color.Blue, hero.ObjSize.X / 4), stick.ObjPoint, stick.ObjSize);
+            graphics.DrawLine(new Pen(Color.Blue, hero.Size.X / 4), stick.Point, stick.Size);
 
         }
 
         private static Rectangle ToRectangle(GameObject platform)
         {
-            return new Rectangle(platform.ObjPoint.X, platform.ObjPoint.Y, platform.ObjSize.X, platform.ObjSize.Y);
+            return new Rectangle(platform.Point.X, platform.Point.Y, platform.Size.X, platform.Size.Y);
         }
 
         public void Update()
@@ -66,18 +66,21 @@ namespace StickHero
                 case GameState.Fall:
                     Fall();
                     break;
+                case GameState.Nothing:
+                    break;
+                default: throw new ArgumentOutOfRangeException("Oops");
             }
         }
 
         private void GrowStick()
         {
-            if (stick.ObjPoint.Y - stick.ObjSize.Y >= width - stick.ObjPoint.X)
+            if (stick.Point.Y - stick.Size.Y >= pictureBoxWidth - stick.Point.X)
                 GameState = GameState.LowerStick;
             else
             {
-                stick.ObjSize.Y -= AnimationSpeed;
-                stickLength = Math.Sqrt(Math.Pow(stick.ObjSize.Y - stick.ObjPoint.Y, 2) +
-                                        Math.Pow(stick.ObjSize.X - stick.ObjPoint.X, 2));
+                stick.Size.Y -= AnimationSpeed;
+                stickLength = Math.Sqrt(Math.Pow(stick.Size.Y - stick.Point.Y, 2) +
+                                        Math.Pow(stick.Size.X - stick.Point.X, 2));
             }
         }
 
@@ -94,18 +97,18 @@ namespace StickHero
 
         private void MoveHero()
         {
-            if (hero.ObjPoint.X >= stick.ObjSize.X - hero.ObjSize.X)
+            if (hero.Point.X >= stick.Size.X - hero.Size.X)
                 GameState = GameState.GetResults;
             else
-                hero.ObjPoint.X += AnimationSpeed;
+                hero.Point.X += AnimationSpeed;
         }
 
         private void GetResults()
         {   
-            if (stick.ObjSize.X >= secondPlatform.ObjPoint.X &&
-                stick.ObjSize.X <= secondPlatform.ObjPoint.X + secondPlatform.ObjSize.X)
-                if (stick.ObjSize.X >= secondPlatform.ObjPoint.X + secondPlatform.ObjSize.X / 2 - 10 &&
-                    stick.ObjSize.X <= secondPlatform.ObjPoint.X + secondPlatform.ObjSize.X / 2 + 10)
+            if (stick.Size.X >= secondPlatform.Point.X &&
+                stick.Size.X <= secondPlatform.Point.X + secondPlatform.Size.X)
+                if (stick.Size.X >= secondPlatform.Point.X + secondPlatform.Size.X / 2 - 10 &&
+                    stick.Size.X <= secondPlatform.Point.X + secondPlatform.Size.X / 2 + 10)
                 {
                     score += 2;
                     OnScoreChanged();
@@ -131,7 +134,7 @@ namespace StickHero
             }
             else
             {
-                hero.ObjPoint.Y += AnimationSpeed;
+                hero.Point.Y += AnimationSpeed;
                 angle -= AngleReduction;
                 DropStick();
             }
@@ -139,27 +142,27 @@ namespace StickHero
 
         private void CreateWorld()
         {
-            firstPlatform.ObjPoint = new Point(0, height - height / 4);
-            firstPlatform.ObjSize = new Point(width / 5, height);
-            secondPlatform.ObjSize = new Point(rnd.Next(width / 10, width / 5), height);
-            secondPlatform.ObjPoint =
+            firstPlatform.Point = new Point(0, pictureBoxHeight - pictureBoxHeight / 4);
+            firstPlatform.Size = new Point(pictureBoxWidth / 5, pictureBoxHeight);
+            secondPlatform.Size = new Point(rnd.Next(pictureBoxWidth / 10, pictureBoxWidth / 5), pictureBoxHeight);
+            secondPlatform.Point =
                 new Point(
-                    rnd.Next(firstPlatform.ObjPoint.X + firstPlatform.ObjSize.X + width / 5,
-                    width - secondPlatform.ObjSize.X), firstPlatform.ObjPoint.Y);
+                    rnd.Next(firstPlatform.Point.X + firstPlatform.Size.X + pictureBoxWidth / 5,
+                    pictureBoxWidth - secondPlatform.Size.X), firstPlatform.Point.Y);
 
-            hero.ObjSize = new Point(40, 60);
-            hero.ObjPoint = new Point(firstPlatform.ObjSize.X - hero.ObjSize.X - 5, firstPlatform.ObjPoint.Y - hero.ObjSize.Y);
+            hero.Size = new Point(40, 60);
+            hero.Point = new Point(firstPlatform.Size.X - hero.Size.X - 5, firstPlatform.Point.Y - hero.Size.Y);
 
-            stick.ObjPoint = new Point(hero.ObjPoint.X + hero.ObjSize.X + 2, hero.ObjPoint.Y + hero.ObjSize.Y + 2);
-            stick.ObjSize = new Point(stick.ObjPoint.X, stick.ObjPoint.Y - hero.ObjSize.Y / 2);
+            stick.Point = new Point(hero.Point.X + hero.Size.X + 2, hero.Point.Y + hero.Size.Y + 2);
+            stick.Size = new Point(stick.Point.X, stick.Point.Y - hero.Size.Y / 2);
             GameState = GameState.Nothing;
             angle = 90;
         }
 
         private void DropStick()
         {
-            stick.ObjSize.X = (int)(stickLength * Math.Cos(Math.PI / 180 * angle) + stick.ObjPoint.X);
-            stick.ObjSize.Y = (int)(stick.ObjPoint.Y - stickLength * Math.Sin(Math.PI / 180 * angle));
+            stick.Size.X = (int)(stickLength * Math.Cos(Math.PI / 180 * angle) + stick.Point.X);
+            stick.Size.Y = (int)(stick.Point.Y - stickLength * Math.Sin(Math.PI / 180 * angle));
         }
 
         protected virtual void OnScoreChanged()
