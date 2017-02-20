@@ -6,7 +6,7 @@ namespace StickHero
         GrowStick,
         LowerStick,
         MoveHero,
-        GetResults,
+        ProcessResults,
         Fall
     }
 }
