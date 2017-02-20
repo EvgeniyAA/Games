@@ -167,8 +167,6 @@ namespace StickHero
             stick.PointA = new Point(hero.X + hero.Size.Width + 2, hero.Y + hero.Size.Height + 2);
             stick.PointB = new Point(stick.PointA.X, stick.PointA.Y - hero.Size.Height / 2);
             stick.Angle = 90;
-            //stick.Length = Math.Sqrt(Math.Pow(stick.PointB.Y - stick.PointA.Y, 2) +
-            //                   Math.Pow(stick.PointB.X - stick.PointA.X, 2));
             int secondPlatformWidth = rnd.Next(gameField.Width / 10, gameField.Width / 5);
             int secondPlatformX = rnd.Next(firstPlatform.X + firstPlatform.Size.Width + gameField.Width / 5,
                                            gameField.Width - secondPlatform.Size.Width);
